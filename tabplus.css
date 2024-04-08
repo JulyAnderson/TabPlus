@@ -1,0 +1,9 @@
+body{
+    font-family:  'Courier New', Courier, monospace;
+    text-align: center;
+}
+
+#board {
+    background: linear-gradient(to bottom, skyblue, rgb(210, 240, 252));
+    border-bottom: 8px dashed black;
+}
