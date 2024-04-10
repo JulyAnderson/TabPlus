@@ -85,12 +85,12 @@ function gerarOperacao() {
 function determinarFrequenciaTabuada() {
     let frequencia = Math.random(); // Gera um número aleatório entre 0 e 1
 
-    if (frequencia > 0.7) {
-        return [2, 5, 10]; // Mais frequente
-    } else if (frequencia > 0.4) {
+    if (frequencia > 0.9) {
+        return [7,8,9]; // Menos frequente
+    } else if (frequencia > 0.5) {
         return [3, 4, 6]; // Segunda mais frequente
     } else {
-        return [0, 1, 7, 8, 9]; // Menos frequente
+        return [0,1,2,5,10]; // Menos frequente
     }
 }
 
@@ -133,14 +133,16 @@ function atualizarTela() {
     // Exibir a operação na tela
     context.clearRect(0, 0, boardWidth, boardHeight);
     let perguntaElement = document.createElement("p");
+    let perguntaFontSize = Math.min(boardWidth * 0.1, boardHeight * 0.1); // Tamanho da fonte baseado nas dimensões da tela
+    perguntaElement.style.font = perguntaFontSize + "px Courier";
     perguntaElement.textContent = operacao.operacao; // Conteúdo da pergunta
-    perguntaElement.style.font = "6vw Courier";
     perguntaElement.style.color = "black";
     perguntaElement.style.position = "absolute";
     perguntaElement.style.left = "50%";
     perguntaElement.style.top = "4%";
     perguntaElement.style.transform = "translateX(-50%)"; // Centraliza horizontalmente
     perguntaElement.style.zIndex = "1"; // Definindo o zIndex para que fique acima dos botões
+    
     document.body.appendChild(perguntaElement);
 
     // Criar botões com as opções de resposta
@@ -161,10 +163,12 @@ function atualizarTela() {
         button.style.top = boardHeight*0.4 + "px"; // Centraliza verticalmente
 
         // Estilo do texto dentro do botão
-        button.style.font = "3vw Courier"; // Tamanho da fonte maior
+        button.style.font = "3rem Courier"; // Tamanho da fonte maior
         button.style.fontWeight = "bold"; // Fonte em negrito
         button.style.color = "black"; // Cor do texto preta
         button.style.textAlign = "center"; // Alinhamento central do texto
+        let buttonFontSize = Math.min(boardWidth * 0.05, boardHeight * 0.05); // Tamanho da fonte baseado nas dimensões da tela
+        button.style.font = buttonFontSize + "px Courier";
 
         // Ação do botão (verifica se é a resposta correta)
         button.onclick = function () {
@@ -206,18 +210,11 @@ function update() {
     personagem.y = Math.min(personagem.y + velocityY, personagemY)
     context.drawImage(personagemImg, personagem.x, personagem.y, personagem.width, personagem.height);
 
-    // obstáculo
-    let obstaculoAtual = null; // Variável para rastrear o obstáculo atualmente em tela
-
+   
     for (let i = 0; i < obstaculoTerrestreArray.length; i++) {
         let obstaculo = obstaculoTerrestreArray[i];
 
-        // Verifica se já existe um obstáculo em tela
-        if (obstaculoAtual === null) {
-            obstaculoAtual = obstaculo; // Define o obstáculo atualmente em tela
-        } else {
-            continue; // Pula para o próximo obstáculo sem renderizar o atual
-        }
+        
         // Atualiza a posição do obstáculo
         obstaculo.x += velocityX;
 
@@ -227,20 +224,22 @@ function update() {
         // Verifica a colisão com o personagem
         if (detectCollision(personagem, obstaculo)) {
             gameOver = true;
+            let gameOverFontSize = Math.min(boardWidth * 0.05, boardHeight * 0.05); // Tamanho da fonte baseado nas dimensões da tela
             personagemImg.src = "./img/dino-dead.png";
             personagemImg.onload = function () {
                 context.drawImage(personagemImg, personagem.x, personagem.y, personagem.width, personagem.height);
             }
             // Mostra "Game Over" quando o jogo terminar
+            context.font = gameOverFontSize*2 + "px Courier";
+            context.fillText("Game Over", board.width*0.39, board.height*0.7);
             context.fillStyle = "black";
-            context.font = "10vw Courier";
-            context.fillText("Game Over", board.width*0.18, board.height*0.7);
         }
     }
 
     // score
+    let scoreFontSize = Math.min(boardWidth * 0.03, boardHeight * 0.03); // Tamanho da fonte baseado nas dimensões da tela
+    context.font = scoreFontSize*2 + "px Courier";
     context.fillStyle = "black";
-    context.font = "3vw courier";
     context.fillText(score, boardWidth*0.015, boardHeight*0.09);
 }
 function movePersonagem(e) {
@@ -274,17 +273,17 @@ function placeObstaculo() {
 
     let placeObstaculoChance = Math.random();
 
-    if (placeObstaculoChance > 0.95) { // 10% você consegue o obstáculo 3
+    if (placeObstaculoChance > 0.90) { // 10% você consegue o obstáculo 3
         obstaculo.img = obstaculo3Img;
         obstaculo.width = obstaculo3Width;
         obstaculoTerrestreArray.push(obstaculo);
     }
-    else if (placeObstaculoChance > 0.80) { // 30% você consegue um obstáculo 2
+    else if (placeObstaculoChance > 0.75) { // 30% você consegue um obstáculo 2
         obstaculo.img = obstaculo2Img;
         obstaculo.width = obstaculo2Width;
         obstaculoTerrestreArray.push(obstaculo);
     }
-    else if (placeObstaculoChance > 0.40) { // 50% você consegue um obstáculo 1
+    else if (placeObstaculoChance > 0.60) { // 50% você consegue um obstáculo 1
         obstaculo.img = obstaculo1Img;
         obstaculo.width = obstaculo1Width;
         obstaculoTerrestreArray.push(obstaculo);
@@ -303,8 +302,9 @@ function detectCollision(objetoA, objetoB) {
 
 // Função para lidar com o fim do jogo quando o jogador erra a resposta
 function gameOverWrongAnswer(perguntaElement, respostaCorreta) {
+    let gameOverFontSize = Math.min(boardWidth * 0.05, boardHeight * 0.05); // Tamanho da fonte baseado nas dimensões da tela
     gameOver = true;
     perguntaElement.textContent = `GAME OVER! A resposta correta era: ${respostaCorreta}`;
-    perguntaElement.style.font = "2vw Courier";
+    perguntaElement.style.font = "2rem Courier";
+    perguntaElement.style.font = gameOverFontSize + "px Courier";
 }
-
