@@ -1,107 +1,132 @@
-//board
+// Dimensões do tabuleiro
 let board;
-let boardWidth = window.innerWidth * 0.8; // Subtrai 50 pixels da largura total
-let boardHeight = window.innerHeight * 0.75; // Subtrai 50 pixels da altura total
+const BOARD_WIDTH = window.innerWidth * 0.8; // Subtrai 50 pixels da largura total
+const BOARD_HEIGHT = window.innerHeight * 0.75; // Subtrai 50 pixels da altura total
 let context;
 
-//personagem
-let personagemWidth = boardWidth * 0.07;
-let personagemHeight = boardHeight * 0.15;
-let personagemX = boardWidth * 0.25;
-let personagemY = boardHeight - personagemHeight;
-let personagemImg;
+// Dimensões do personagem
+const PERSONAGEM_WIDTH = BOARD_WIDTH * 0.07;
+const PERSONAGEM_HEIGHT = BOARD_HEIGHT * 0.15;
+const PERSONAGEM_INITIAL_X = BOARD_WIDTH * 0.25;
+const PERSONAGEM_INITIAL_Y = BOARD_HEIGHT - PERSONAGEM_HEIGHT;
 
 let personagem = {
-    x: personagemX,
-    y: personagemY,
-    width: personagemWidth,
-    height: personagemHeight,
+    x: PERSONAGEM_INITIAL_X,
+    y: PERSONAGEM_INITIAL_Y,
+    width: PERSONAGEM_WIDTH,
+    height: PERSONAGEM_HEIGHT,
 }
 
-// obstáculo terrestre
+// Dimensões dos obstáculos
 let obstaculoTerrestreArray = [];
 
-let obstaculo1Width = boardWidth * 0.06;
-let obstaculo2Width = boardWidth * 0.08;
-let obstaculo3Width = boardWidth * 0.09;
-
-let obstaculoHeight = boardWidth * 0.07;
-let obstaculoX = boardWidth;
-let obstaculoY = boardHeight - obstaculoHeight;
+const OBSTACULO_1_WIDTH = BOARD_WIDTH * 0.06;
+const OBSTACULO_2_WIDTH = BOARD_WIDTH * 0.08;
+const OBSTACULO_3_WIDTH = BOARD_WIDTH * 0.09;
+const OBSTACULO_HEIGHT = BOARD_WIDTH * 0.07;
+const OBSTACULO_INITIAL_X = BOARD_WIDTH;
+const OBSTACULO_INITIAL_Y = BOARD_HEIGHT - OBSTACULO_HEIGHT;
 
 let obstaculo1Img;
 let obstaculo2Img;
 let obstaculo3Img;
 
 // física
-let velocityX = -4;
+let velocityX = -3;
 let velocityY = 0;
 let gravity = .15;
 
 let gameOver = false;
 let score = 0;
 
-// board
+// Caminhos das imagens
+const PERSONAGEM_IMG_SRC = "./img/dino.png";
+const PERSONAGEM_DEAD_IMG_SRC = "./img/dino-dead.png";
+const OBSTACULO_1_IMG_SRC = "./img/cactus1.png";
+const OBSTACULO_2_IMG_SRC = "./img/cactus2.png";
+const OBSTACULO_3_IMG_SRC = "./img/cactus3.png";
+
+window.addEventListener("DOMContentLoaded", function() {
+    function verificarOrientacao() {
+        if (window.innerHeight > window.innerWidth) {
+            alert("Por favor, gire o dispositivo para a orientação paisagem para jogar.");
+        }
+    }
+
+    verificarOrientacao();
+
+    window.addEventListener("orientationchange", function() {
+        verificarOrientacao();
+    });
+});
+
 window.onload = function () {
     board = document.getElementById("board");
-    board.height = boardHeight;
-    board.width = boardWidth;
+    board.height = BOARD_HEIGHT;
+    board.width = BOARD_WIDTH;
 
     context = board.getContext("2d");
 
-
     personagemImg = new Image();
-    personagemImg.src = "./img/dino.png";
+    personagemImg.src = PERSONAGEM_IMG_SRC;
     personagemImg.onload = function () {
         context.drawImage(personagemImg, personagem.x, personagem.y, personagem.width, personagem.height);
     }
 
     obstaculo1Img = new Image();
-    obstaculo1Img.src = "./img/cactus1.png";
+    obstaculo1Img.src = OBSTACULO_1_IMG_SRC;
 
     obstaculo2Img = new Image();
-    obstaculo2Img.src = "./img/cactus2.png";
+    obstaculo2Img.src = OBSTACULO_2_IMG_SRC;
 
     obstaculo3Img = new Image();
-    obstaculo3Img.src = "./img/cactus3.png";
+    obstaculo3Img.src = OBSTACULO_3_IMG_SRC;
 
     requestAnimationFrame(update);
     setInterval(placeObstaculo, 1000); //1000 ms = 1s
 
-
-    // Chamada adicionada para atualizar a tela com a pergunta e as opções
     atualizarTela();
 }
 
-
 function gerarOperacao() {
-    let fator1 = Math.floor(Math.random() * 11); // Fator aleatório de 0 a 10
-    let fator2 = Math.floor(Math.random() * 11); // Fator aleatório de 0 a 10
-    let operacao = `${fator1} x ${fator2}`; // Concatenação dos fatores
-    return { operacao: operacao, resposta: fator1 * fator2 }; // Retorna a operação e o resultado correto
-}
+    let fator1, fator2;
 
-// Função para determinar a frequência das tabuadas
-function determinarFrequenciaTabuada() {
-    let frequencia = Math.random(); // Gera um número aleatório entre 0 e 1
+    const fatoresFrequentes = () => {
+        const fatores = [0, 1, 2, 5, 10];
+        return fatores[Math.floor(Math.random() * fatores.length)];
+    };
+    const fatoresSegundoMaisFrequentes = () => {
+        const fatores = [3, 4];
+        return fatores[Math.floor(Math.random() * fatores.length)];
+    };
+    const fatoresMenosFrequentes = () => {
+        const fatores = [6, 7, 8, 9];
+        return fatores[Math.floor(Math.random() * fatores.length)];
+    };
 
-    if (frequencia > 0.9) {
-        return [7,8,9]; // Menos frequente
-    } else if (frequencia > 0.5) {
-        return [3, 4, 6]; // Segunda mais frequente
+    const randomIndex = Math.random();
+    if (randomIndex < 0.5) {
+        fator1 = fatoresFrequentes();
+    } else if (randomIndex < 0.75) {
+        fator1 = fatoresSegundoMaisFrequentes();
     } else {
-        return [0,1,2,5,10]; // Menos frequente
+        fator1 = fatoresMenosFrequentes();
     }
+
+    randomIndex2 = Math.random();
+    if (randomIndex2 < 0.5) {
+        fator2 = fatoresFrequentes();
+    } else if (randomIndex2 < 0.75) {
+        fator2 = fatoresSegundoMaisFrequentes();
+    } else {
+        fator2 = fatoresMenosFrequentes();
+    }
+
+    const operacao = `${fator1} x ${fator2}`;
+
+    return { operacao: operacao, resposta: fator1 * fator2, fator1, fator2 };
 }
 
-// Função para escolher uma tabuada com base na frequência
-function escolherTabuada() {
-    let tabuadas = determinarFrequenciaTabuada();
-    let indice = Math.floor(Math.random() * tabuadas.length);
-    return tabuadas[indice];
-}
-
-// Função para embaralhar um array
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -110,48 +135,40 @@ function shuffleArray(array) {
     return array;
 }
 
-// Função para gerar as opções de resposta
 function gerarOpcoes(respostaCorreta) {
-    let opcoes = [respostaCorreta];
-    for (let i = 0; i < 2; i++) {
-        let respostaIncorreta = respostaCorreta;
-        while (respostaIncorreta === respostaCorreta) {
-            respostaIncorreta = Math.floor(Math.random() * 100);
+    const opcoes = [respostaCorreta];
+    while (opcoes.length < 3) {
+        const respostaIncorreta = Math.floor(Math.random() * 100);
+        if (!opcoes.includes(respostaIncorreta)) {
+            opcoes.push(respostaIncorreta);
         }
-        opcoes.push(respostaIncorreta);
     }
     return shuffleArray(opcoes);
 }
 
-// Modifique a função atualizarTela() para adicionar feedback visual indicando a resposta correta
 function atualizarTela() {
     let operacao = gerarOperacao();
-    let tabuada = escolherTabuada();
     let respostaCorreta = operacao.resposta;
     let opcoes = gerarOpcoes(respostaCorreta);
 
-    // Exibir a operação na tela
-    context.clearRect(0, 0, boardWidth, boardHeight);
+    context.clearRect(0, 0, BOARD_WIDTH, BOARD_HEIGHT);
     let perguntaElement = document.createElement("p");
-    let perguntaFontSize = Math.min(boardWidth * 0.1, boardHeight * 0.1); // Tamanho da fonte baseado nas dimensões da tela
+    let perguntaFontSize = Math.min(BOARD_WIDTH * 0.1, BOARD_HEIGHT * 0.1);
     perguntaElement.style.font = perguntaFontSize + "px Courier";
-    perguntaElement.textContent = operacao.operacao; // Conteúdo da pergunta
+    perguntaElement.textContent = operacao.operacao;
     perguntaElement.style.color = "black";
     perguntaElement.style.position = "absolute";
     perguntaElement.style.left = "50%";
     perguntaElement.style.top = "4%";
-    perguntaElement.style.transform = "translateX(-50%)"; // Centraliza horizontalmente
-    perguntaElement.style.zIndex = "1"; // Definindo o zIndex para que fique acima dos botões
-    
+    perguntaElement.style.transform = "translateX(-50%)";
+    perguntaElement.style.zIndex = "1";
     document.body.appendChild(perguntaElement);
 
-    // Criar botões com as opções de resposta
-    let buttonWidth = boardWidth * 0.1;
-    let buttonHeight = boardHeight * 0.1;
-    let buttonMargin = boardWidth * 0.01;
-    let totalButtonWidth = (buttonWidth * 3) + (buttonMargin * 2); //largura total ocupada pelos botões
-    let buttonStartX = ((boardWidth - totalButtonWidth) / 2) + (totalButtonWidth / 2.5); // Posição inicial X dos botões  
-    let respostaCorretaIndex = opcoes.indexOf(respostaCorreta); // Índice da resposta correta
+    let buttonWidth = BOARD_WIDTH * 0.1;
+    let buttonHeight = BOARD_HEIGHT * 0.1;
+    let buttonMargin = BOARD_WIDTH * 0.01;
+    let totalButtonWidth = (buttonWidth * 3) + (buttonMargin * 2);
+    let buttonStartX = ((BOARD_WIDTH - totalButtonWidth) / 2) + (totalButtonWidth / 2.5);
 
     for (let i = 0; i < 3; i++) {
         let button = document.createElement("button");
@@ -159,32 +176,30 @@ function atualizarTela() {
         button.style.width = buttonWidth + "px";
         button.style.height = buttonHeight + "px";
         button.style.position = "absolute";
-        button.style.left = buttonStartX + (i * (buttonWidth + buttonMargin)) + "px"; // Calcula a posição X do botão
-        button.style.top = boardHeight*0.4 + "px"; // Centraliza verticalmente
+        button.style.left = buttonStartX + (i * (buttonWidth + buttonMargin)) + "px";
+        button.style.top = BOARD_HEIGHT * 0.4 + "px";
 
-        // Estilo do texto dentro do botão
-        button.style.font = "3rem Courier"; // Tamanho da fonte maior
-        button.style.fontWeight = "bold"; // Fonte em negrito
-        button.style.color = "black"; // Cor do texto preta
-        button.style.textAlign = "center"; // Alinhamento central do texto
-        let buttonFontSize = Math.min(boardWidth * 0.05, boardHeight * 0.05); // Tamanho da fonte baseado nas dimensões da tela
+        button.style.font = "3rem Courier";
+        button.style.fontWeight = "bold";
+        button.style.color = "black";
+        button.style.textAlign = "center";
+        let buttonFontSize = Math.min(BOARD_WIDTH * 0.05, BOARD_HEIGHT * 0.05);
         button.style.font = buttonFontSize + "px Courier";
 
-        // Ação do botão (verifica se é a resposta correta)
         button.onclick = function () {
             if (this.textContent == respostaCorreta) {
-                velocityY = -10; // habilita o pulo se a resposta estiver correta
+                velocityY = -BOARD_HEIGHT / 60;
                 score++;
                 document.body.removeChild(perguntaElement);
-                atualizarTela(); // Chama a função para atualizar a tela com uma nova pergunta
+                atualizarTela();
             } else {
-                gameOverWrongAnswer(perguntaElement, respostaCorreta); // Chama a função para encerrar o jogo
-                this.style.backgroundColor = "gray"; // Altera o botão selecionado para cinza
-                this.style.color = "white"; // Altera a cor do texto do botão selecionado para branco
+                gameOverWrongAnswer(respostaCorreta);
+                this.style.backgroundColor = "gray";
+                this.style.color = "white";
                 let buttons = document.querySelectorAll("button");
                 buttons.forEach((button, index) => {
                     if (opcoes[index] == respostaCorreta) {
-                        button.style.backgroundColor = "green"; // Destaca o botão correto em verde
+                        button.style.backgroundColor = "green";
                     }
                 });
             }
@@ -195,7 +210,6 @@ function atualizarTela() {
     }
 }
 
-// Atualize a função update() para verificar se o jogo terminou após o jogador errar a resposta
 function update() {
     requestAnimationFrame(update);
 
@@ -205,106 +219,115 @@ function update() {
 
     context.clearRect(0, 0, board.width, board.height);
 
-    // personagem
     velocityY += gravity;
-    personagem.y = Math.min(personagem.y + velocityY, personagemY)
+    personagem.y = Math.min(personagem.y + velocityY, PERSONAGEM_INITIAL_Y)
     context.drawImage(personagemImg, personagem.x, personagem.y, personagem.width, personagem.height);
 
-   
     for (let i = 0; i < obstaculoTerrestreArray.length; i++) {
         let obstaculo = obstaculoTerrestreArray[i];
 
-        
-        // Atualiza a posição do obstáculo
         obstaculo.x += velocityX;
 
-        // Renderiza o obstáculo
         context.drawImage(obstaculo.img, obstaculo.x, obstaculo.y, obstaculo.width, obstaculo.height);
 
-        // Verifica a colisão com o personagem
         if (detectCollision(personagem, obstaculo)) {
             gameOver = true;
-            let gameOverFontSize = Math.min(boardWidth * 0.05, boardHeight * 0.05); // Tamanho da fonte baseado nas dimensões da tela
-            personagemImg.src = "./img/dino-dead.png";
-            personagemImg.onload = function () {
-                context.drawImage(personagemImg, personagem.x, personagem.y, personagem.width, personagem.height);
-            }
-            // Mostra "Game Over" quando o jogo terminar
-            context.font = gameOverFontSize*2 + "px Courier";
-            context.fillText("Game Over", board.width*0.39, board.height*0.7);
-            context.fillStyle = "black";
+            personagemImg.src = PERSONAGEM_DEAD_IMG_SRC;
+            gameOverWrongAnswer(resposta);
         }
     }
 
-    // score
-    let scoreFontSize = Math.min(boardWidth * 0.03, boardHeight * 0.03); // Tamanho da fonte baseado nas dimensões da tela
-    context.font = scoreFontSize*2 + "px Courier";
+    let scoreFontSize = Math.min(BOARD_WIDTH * 0.03, BOARD_HEIGHT * 0.03);
+    context.font = scoreFontSize * 2 + "px Courier";
     context.fillStyle = "black";
-    context.fillText(score, boardWidth*0.015, boardHeight*0.09);
+    context.fillText(score, BOARD_WIDTH * 0.015, BOARD_HEIGHT * 0.09);
 }
-function movePersonagem(e) {
-    if (gameOver) {
-        return;
-    }
-
-    if (e.code == "Space" || e.code == "ArrowUp") {
-        //pulo
-        velocityY = -10;
-    } else if (e.code == "ArrowDown") {
-        //obstáculo aéreo não implementado
-    }
-}
-
 
 function placeObstaculo() {
-
     if (gameOver) {
         return;
     }
 
-    // place obstaculo
     let obstaculo = {
         img: null,
-        x: obstaculoX,
-        y: obstaculoY,
+        x: OBSTACULO_INITIAL_X,
+        y: OBSTACULO_INITIAL_Y,
         width: null,
-        height: obstaculoHeight,
+        height: OBSTACULO_HEIGHT
     }
 
     let placeObstaculoChance = Math.random();
 
-    if (placeObstaculoChance > 0.90) { // 10% você consegue o obstáculo 3
+    if (placeObstaculoChance > 0.90) {
         obstaculo.img = obstaculo3Img;
-        obstaculo.width = obstaculo3Width;
+        obstaculo.width = OBSTACULO_3_WIDTH;
         obstaculoTerrestreArray.push(obstaculo);
     }
-    else if (placeObstaculoChance > 0.75) { // 30% você consegue um obstáculo 2
+    else if (placeObstaculoChance > 0.80) {
         obstaculo.img = obstaculo2Img;
-        obstaculo.width = obstaculo2Width;
+        obstaculo.width = OBSTACULO_2_WIDTH;
         obstaculoTerrestreArray.push(obstaculo);
     }
-    else if (placeObstaculoChance > 0.60) { // 50% você consegue um obstáculo 1
+    else if (placeObstaculoChance > 0.50) {
         obstaculo.img = obstaculo1Img;
-        obstaculo.width = obstaculo1Width;
+        obstaculo.width = OBSTACULO_1_WIDTH;
         obstaculoTerrestreArray.push(obstaculo);
     }
     if (obstaculoTerrestreArray.length > 5) {
-        obstaculoTerrestreArray.shift(); // "Remova o primeiro elemento do array para que o array não cresça constantemente."
+        obstaculoTerrestreArray.shift();
     }
 }
 
 function detectCollision(objetoA, objetoB) {
-    return objetoA.x < objetoB.x + objetoB.width &&   // O canto superior esquerdo de A não alcança o canto superior direito de B
-        objetoA.x + objetoA.width > objetoB.x &&   // O canto superior direito de A passa pelo canto superior esquerdo de B
-        objetoA.y < objetoB.y + objetoB.height &&  // O canto superior esquerdo de A não alcança o canto inferior esquerdo de B
-        objetoA.y + objetoA.height > objetoB.y;    // O canto inferior esquerdo de A passa pelo canto superior esquerdo de B
+    return objetoA.x < objetoB.x + objetoB.width &&
+        objetoA.x + objetoA.width > objetoB.x &&
+        objetoA.y < objetoB.y + objetoB.height &&
+        objetoA.y + objetoA.height > objetoB.y;
 }
 
-// Função para lidar com o fim do jogo quando o jogador erra a resposta
-function gameOverWrongAnswer(perguntaElement, respostaCorreta) {
-    let gameOverFontSize = Math.min(boardWidth * 0.05, boardHeight * 0.05); // Tamanho da fonte baseado nas dimensões da tela
+function gameOverWrongAnswer(respostaCorreta) {
     gameOver = true;
-    perguntaElement.textContent = `GAME OVER! A resposta correta era: ${respostaCorreta}`;
-    perguntaElement.style.font = "2rem Courier";
-    perguntaElement.style.font = gameOverFontSize + "px Courier";
+    let gameOverMessage = document.createElement("p");
+    gameOverMessage.textContent = `GAME OVER! A resposta correta é: ${respostaCorreta}`;
+    gameOverMessage.style.font = "1rem Courier";
+    gameOverMessage.style.color = "black";
+    gameOverMessage.style.position = "absolute";
+    gameOverMessage.style.left = "50%";
+    gameOverMessage.style.top = "30%";
+    gameOverMessage.style.transform = "translateX(-50%)";
+    document.body.appendChild(gameOverMessage);
+
+    for (let i = 0; i < obstaculoTerrestreArray.length; i++) {
+        let obstaculo = obstaculoTerrestreArray[i];
+        if (detectCollision(personagem, obstaculo)) {
+            let collisionMessage = document.createElement("p");
+            collisionMessage.textContent = "Você colidiu com um obstáculo!";
+            collisionMessage.style.font = "1rem Courier";
+            collisionMessage.style.color = "black";
+            collisionMessage.style.position = "absolute";
+            collisionMessage.style.left = "50%";
+            collisionMessage.style.top = "40%";
+            collisionMessage.style.transform = "translateX(-50%)";
+            document.body.appendChild(collisionMessage);
+            break;
+        }
+    }
+
+    let buttons = document.querySelectorAll("button");
+    buttons.forEach(button => {
+        document.body.removeChild(button);
+    });
+
+    let restartButton = document.createElement("button");
+    restartButton.textContent = "Reiniciar";
+    restartButton.style.width = "150px";
+    restartButton.style.height = "50px";
+    restartButton.style.position = "absolute";
+    restartButton.style.left = "50%";
+    restartButton.style.top = "50%";
+    restartButton.style.transform = "translateX(-50%)";
+    restartButton.onclick = function() {
+        location.reload();
+    };
+    document.body.appendChild(restartButton);
 }
