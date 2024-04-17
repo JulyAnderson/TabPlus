@@ -19,29 +19,26 @@ let personagem = {
 
 // Dimensões dos obstáculos
 let obstaculoTerrestreArray = [];
+const OBSTACULO_HEIGHT = BOARD_WIDTH * 0.07;
+const OBSTACULO_INITIAL_X = BOARD_WIDTH;
+const OBSTACULO_INITIAL_Y = BOARD_HEIGHT - OBSTACULO_HEIGHT;
 
 const OBSTACULO_1_WIDTH = BOARD_WIDTH * 0.06;
 const OBSTACULO_2_WIDTH = BOARD_WIDTH * 0.08;
 const OBSTACULO_3_WIDTH = BOARD_WIDTH * 0.09;
-const OBSTACULO_HEIGHT = BOARD_WIDTH * 0.07;
-const OBSTACULO_INITIAL_X = BOARD_WIDTH;
-const OBSTACULO_INITIAL_Y = BOARD_HEIGHT - OBSTACULO_HEIGHT;
 
 let obstaculo1Img;
 let obstaculo2Img;
 let obstaculo3Img;
 
-// física
-let initialVelocityX = -3;
+// Física
+let initialVelocityY = 0;
+let velocityX = -3;
+let velocityY = 0;
+let gravity = 0.15;
 
 // Taxa de aumento da velocidade dos obstáculos por resposta correta
 let velocityIncreaseRate = 0.1;
-
-let velocityX = initialVelocityX;
-let velocityY = 0;
-let gravity = .15;
-
-
 
 let gameOver = false;
 let score = 0;
@@ -53,6 +50,7 @@ const OBSTACULO_1_IMG_SRC = "./img/cactus1.png";
 const OBSTACULO_2_IMG_SRC = "./img/cactus2.png";
 const OBSTACULO_3_IMG_SRC = "./img/cactus3.png";
 
+// Verifica a orientação do dispositivo
 window.addEventListener("DOMContentLoaded", function() {
     function verificarOrientacao() {
         if (window.innerHeight > window.innerWidth) {
@@ -62,16 +60,14 @@ window.addEventListener("DOMContentLoaded", function() {
 
     verificarOrientacao();
 
-    window.addEventListener("orientationchange", function() {
-        verificarOrientacao();
-    });
+    window.addEventListener("orientationchange", verificarOrientacao);
 });
 
+// Inicializa o jogo quando a página carrega
 window.onload = function () {
     board = document.getElementById("board");
     board.height = BOARD_HEIGHT;
     board.width = BOARD_WIDTH;
-
     context = board.getContext("2d");
 
     personagemImg = new Image();
@@ -95,22 +91,16 @@ window.onload = function () {
     atualizarTela();
 }
 
+// Gera uma operação matemática aleatória
 function gerarOperacao() {
+    // Funções auxiliares para gerar fatores aleatórios
+    const fatoresFrequentes = () => [0, 1, 2, 5, 10][Math.floor(Math.random() * 5)];
+    const fatoresSegundoMaisFrequentes = () => [3, 4][Math.floor(Math.random() * 2)];
+    const fatoresMenosFrequentes = () => [6, 7, 8, 9][Math.floor(Math.random() * 4)];
+
     let fator1, fator2;
 
-    const fatoresFrequentes = () => {
-        const fatores = [0, 1, 2, 5, 10];
-        return fatores[Math.floor(Math.random() * fatores.length)];
-    };
-    const fatoresSegundoMaisFrequentes = () => {
-        const fatores = [3, 4];
-        return fatores[Math.floor(Math.random() * fatores.length)];
-    };
-    const fatoresMenosFrequentes = () => {
-        const fatores = [6, 7, 8, 9];
-        return fatores[Math.floor(Math.random() * fatores.length)];
-    };
-
+    // Seleciona aleatoriamente os fatores
     const randomIndex = Math.random();
     if (randomIndex < 0.5) {
         fator1 = fatoresFrequentes();
@@ -120,7 +110,7 @@ function gerarOperacao() {
         fator1 = fatoresMenosFrequentes();
     }
 
-    randomIndex2 = Math.random();
+    const randomIndex2 = Math.random();
     if (randomIndex2 < 0.5) {
         fator2 = fatoresFrequentes();
     } else if (randomIndex2 < 0.75) {
@@ -134,6 +124,7 @@ function gerarOperacao() {
     return { operacao: operacao, resposta: fator1 * fator2, fator1, fator2 };
 }
 
+// Embaralha um array
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -142,6 +133,7 @@ function shuffleArray(array) {
     return array;
 }
 
+// Gera opções de resposta
 function gerarOpcoes(respostaCorreta) {
     const opcoes = [respostaCorreta];
     while (opcoes.length < 3) {
@@ -153,6 +145,7 @@ function gerarOpcoes(respostaCorreta) {
     return shuffleArray(opcoes);
 }
 
+// Atualiza a tela do jogo
 function atualizarTela() {
     let operacao = gerarOperacao();
     let respostaCorreta = operacao.resposta;
@@ -199,6 +192,8 @@ function atualizarTela() {
                 score++;
                 document.body.removeChild(perguntaElement);
                 atualizarTela();
+                increaseObstacleSpeed(); // Chamada da função para aumentar a velocidade dos obstáculos
+                console.log("Velocidade aumentada:", velocityY); // Console log para verificar a velocidade
             } else {
                 gameOverWrongAnswer(respostaCorreta);
                 this.style.backgroundColor = "gray";
@@ -219,19 +214,10 @@ function atualizarTela() {
 
 // Função para aumentar a velocidade dos obstáculos
 function increaseObstacleSpeed() {
-    velocityX += velocityIncreaseRate;
+    velocityY += velocityIncreaseRate;
 }
 
-// Dentro da função de clique do botão de resposta correta
-if (this.textContent == respostaCorreta) {
-    velocityY = -BOARD_HEIGHT / 60;
-    score++;
-    increaseObstacleSpeed(); // Aumenta a velocidade dos obstáculos
-    document.body.removeChild(perguntaElement);
-    atualizarTela();
-}
-
-// Função update onde você atualiza a posição dos obstáculos
+// Atualiza o jogo
 function update() {
     requestAnimationFrame(update);
 
@@ -262,13 +248,14 @@ function update() {
     let scoreFontSize = Math.min(BOARD_WIDTH * 0.03, BOARD_HEIGHT * 0.03);
     context.font = scoreFontSize * 2 + "px Courier";
     context.fillStyle = "black";
-    context.fillText(score, BOARD_WIDTH * 0.015, BOARD_HEIGHT * 0.09);
-}
+    context.fillText(score, BOARD_WIDTH * 0.015, BOARD_HEIGHT * 0.09);}
 
+// Coloca um obstáculo no jogo
 function placeObstaculo() {
     if (gameOver) {
         return;
     }
+
 
     let obstaculo = {
         img: null,
@@ -285,12 +272,12 @@ function placeObstaculo() {
         obstaculo.width = OBSTACULO_3_WIDTH;
         obstaculoTerrestreArray.push(obstaculo);
     }
-    else if (placeObstaculoChance > 0.90) {
+    else if (placeObstaculoChance > 0.95) {
         obstaculo.img = obstaculo2Img;
         obstaculo.width = OBSTACULO_2_WIDTH;
         obstaculoTerrestreArray.push(obstaculo);
     }
-    else if (placeObstaculoChance > 0.80) {
+    else if (placeObstaculoChance > 0.90) {
         obstaculo.img = obstaculo1Img;
         obstaculo.width = OBSTACULO_1_WIDTH;
         obstaculoTerrestreArray.push(obstaculo);
@@ -300,6 +287,7 @@ function placeObstaculo() {
     }
 }
 
+// Detecta colisões entre objetos
 function detectCollision(objetoA, objetoB) {
     return objetoA.x < objetoB.x + objetoB.width &&
         objetoA.x + objetoA.width > objetoB.x &&
@@ -353,3 +341,4 @@ function gameOverWrongAnswer(respostaCorreta) {
     };
     document.body.appendChild(restartButton);
 }
+
