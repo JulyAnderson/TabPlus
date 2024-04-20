@@ -1,9 +1,38 @@
-body{
-    font-family:  'Courier New', Courier, monospace;
-    text-align: center;
+*{
+    margin:0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 #board {
     background: linear-gradient(to bottom, skyblue, rgb(210, 240, 252));
     border-bottom: 8px dashed black;
+    /* Estilos para o board */
+    width: 90vw; /* 90% da largura da janela */
+    height: 60vh; /* 60% da altura da janela */
+    position: relative;
+}
+
+.personagem{
+    position: absolute;
+    bottom: 0;
+}
+
+/* Estilos para os obstáculos */
+.obstacle {
+    position: absolute; /* Define o posicionamento absoluto para os obstáculos */
+    bottom: 0; /* Posiciona os obstáculos na parte inferior do board */
+}
+
+/* Estilos específicos para cada obstáculo (ajuste conforme necessário) */
+.obstacle:nth-child(1) {
+    left: 20%; /* Posiciona o primeiro obstáculo a 20% da largura do board */
+}
+
+.obstacle:nth-child(2) {
+    left: 50%; /* Posiciona o segundo obstáculo a 50% da largura do board */
+}
+
+.obstacle:nth-child(3) {
+    left: 80%; /* Posiciona o terceiro obstáculo a 80% da largura do board */
 }
