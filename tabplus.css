@@ -11,28 +11,79 @@
     width: 90vw; /* 90% da largura da janela */
     height: 60vh; /* 60% da altura da janela */
     position: relative;
+    overflow: hidden;
 }
 
 .personagem{
     position: absolute;
     bottom: 0;
+    
+    left: 30%;
 }
 
-/* Estilos para os obstáculos */
-.obstacle {
-    position: absolute; /* Define o posicionamento absoluto para os obstáculos */
-    bottom: 0; /* Posiciona os obstáculos na parte inferior do board */
+.jump{
+    animation: jump 1000ms  ease-out;
+}
+
+.obstaculo {
+    position: absolute;
+    bottom: 0;
 }
 
 /* Estilos específicos para cada obstáculo (ajuste conforme necessário) */
-.obstacle:nth-child(1) {
-    left: 20%; /* Posiciona o primeiro obstáculo a 20% da largura do board */
+.obstaculo:nth-child(1) {
+    right: -100px;
+    animation: obstaculo-animation 2s linear infinite; /* Velocidade pode ser ajustada conforme necessário */
 }
 
-.obstacle:nth-child(2) {
-    left: 50%; /* Posiciona o segundo obstáculo a 50% da largura do board */
+.obstaculo:nth-child(2) {
+    right: -100px;
+    animation: obstaculo-animation 5s linear infinite;
 }
 
-.obstacle:nth-child(3) {
-    left: 80%; /* Posiciona o terceiro obstáculo a 80% da largura do board */
+.obstaculo:nth-child(3) {
+    right: -100px;
+    animation: obstaculo-animation 3s linear infinite;
+}
+
+@keyframes obstaculo-animation {
+    0% {
+        left: 100%; /* Inicia fora da tela à direita */
+    }
+    100% {
+        left: -20%; /* Termina fora da tela à esquerda (com margem extra para garantir que o obstáculo não apareça abruptamente) */
+    }
+}
+
+@keyframes jump {
+    0% {
+        bottom: 0;
+    }
+    10% {
+        bottom: 15%;
+    }
+    20% {
+        bottom: 25%;
+    }
+    30% {
+        bottom: 35%;
+    }
+    40% {
+        bottom: 45%;
+    }
+    50% {
+        bottom: 50%;
+    }
+    60% {
+        bottom: 45%;
+    }
+    70% {
+        bottom: 35%;
+    }
+    80% {
+        bottom: 25%;
+    }
+    90% {
+        bottom: 15%;
+    }
 }
