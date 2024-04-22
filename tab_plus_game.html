@@ -1,23 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tab+</title>
     <link rel="stylesheet" href="tabplus.css">
 </head>
+
 <body>
     <div id="board">
-        <!-- Elemento do personagem -->
-        <img src="./img/dino.png" alt="Personagem" class="personagem">
-        <div>
-            <img src="./img/cactus1.png" alt="Cactus 1" class="obstaculo">
-            <img src="./img/cactus2.png" alt="Cactus 2" class="obstaculo">
-            <img src="./img/cactus3.png" alt="Cactus 3" class="obstaculo">
+
+        <!-- Elemento de texto - operação -->
+        <div class="texto-centralizado">
+            <!-- <h2>02 X 10</h2> -->
+        </div>
+
+        <!--- Elementos de botões de resposta -->
+        <div class="respostas">
+            <button class="iniciar">Iniciar</button> 
+        </div>
+
+        <div class="personagem" >
+            <!-- Elemento do personagem -->
+            <img src="/img/dino.png" alt="Personagem" >
         </div>
         
+
+        <!-- Elementos obstaculos-->
+        <div class="obstaculos"> </div>
+
+        <img src="img/track.png" alt="chão do jogo" class="track">
     </div>
-    
+
 </body>
 <script src="/tabplus.js"></script>
+
 </html>

@@ -2,48 +2,120 @@
     margin:0;
     padding: 0;
     box-sizing: border-box;
+    font-family: Courier, monospace; /* Define a fonte como Courier ou qualquer outra fonte monoespaçada */
 }
 
 #board {
-    background: linear-gradient(to bottom, skyblue, rgb(210, 240, 252));
-    border-bottom: 8px dashed black;
+    background: linear-gradient(to bottom, skyblue, rgb(224, 238, 243));
     /* Estilos para o board */
-    width: 90vw; /* 90% da largura da janela */
-    height: 60vh; /* 60% da altura da janela */
+    width: 100vw; /* 90% da largura da janela */
+    height: 70vh; /* 60% da altura da janela */
     position: relative;
     overflow: hidden;
 }
 
-.personagem{
+.texto-centralizado {
+    text-align: center; /* Centraliza o texto horizontalmente */
+    margin-top: -10px; /* Desloca o texto 10 pixels para cima */
+    font-size: 10vh; /* Define o tamanho da fonte proporcional a 20% da largura da janela de visualização */
+}
+
+.respostas {
+    display: flex;  /* Flexbox para esta div */
+    justify-content: center;  /* Centraliza horizontalmente */
+    align-items: center;  /* Centraliza verticalmente */
+    height: 30%;  /* Altura do contêiner das respostas */
+}
+
+.respostas button{
+    background-color: rgb(226, 221, 241);
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    margin: 1%;
+}
+
+.personagem {
+    width: 5%;
+    height: 12%;
+    background-size: cover; /* Cobrir todo o espaço do elemento */
     position: absolute;
-    bottom: 0;
-    
+    bottom: 1%;
     left: 30%;
 }
 
-.jump{
-    animation: jump 1000ms  ease-out;
+.personagem img{
+    width: 100%;
+    height:100%;
+    bottom: 0%;
 }
 
-.obstaculo {
+.personagem-animado {
+    width: 5%;
+    height: 12%;
+    background-size: cover; /* Cobrir todo o espaço do elemento */
+    position: absolute;
+    bottom: 1%;
+    left: 30%;
+    background-image: url('img/dino-run1.png'), url('img/dino-run2.png'); /* Duas imagens separadas */
+    animation: animacao-personagem 0.5s steps(2) infinite; /* 2 imagens, alternando entre elas */
+}
+
+.personagem-animado img{
+    width: 4.5%;
+    height: 12%;
+    bottom: 0%;
+}
+
+.jump{
+    animation: jump 1000ms  ease-in;
+}
+
+.obstaculos{
+    width: 100%;
+    height: 12%;
+    background-size: cover; /* Cobrir todo o espaço do elemento */
+    position: absolute;
+    bottom: 1%;
+}
+
+.obstaculo1 {
+    width: 3%;
+    height: 100%;
+    right: -100px;
+    background-size: cover;
     position: absolute;
     bottom: 0;
+    background-image: url('/img/cactus1.png'); /* Adicione a barra inicial para indicar raiz */
+    animation: obstaculo-animation 4s linear infinite;
 }
 
-/* Estilos específicos para cada obstáculo (ajuste conforme necessário) */
-.obstaculo:nth-child(1) {
+.obstaculo2 {
+    width: 7%;
+    height:100%;
     right: -100px;
-    animation: obstaculo-animation 2s linear infinite; /* Velocidade pode ser ajustada conforme necessário */
-}
-
-.obstaculo:nth-child(2) {
-    right: -100px;
-    animation: obstaculo-animation 5s linear infinite;
-}
-
-.obstaculo:nth-child(3) {
-    right: -100px;
+    position: absolute;
+    bottom: 0;
+    background-size: cover;
+    background-image: url('/img/cactus2.png'); /* Ajuste o caminho da imagem */
     animation: obstaculo-animation 3s linear infinite;
+}
+
+.obstaculo3 {
+    width: 10%;
+    height:100%;
+    right: -100px;
+    position: absolute;
+    bottom: 0;
+    background-size: cover;
+    background-image: url('/img/cactus3.png'); /* Corrige o caminho da imagem */
+    animation: obstaculo-animation 2s linear infinite;
+}
+
+.track{
+    position: absolute;
+    bottom: 0;
+    width: 100%;
 }
 
 @keyframes obstaculo-animation {
@@ -59,31 +131,15 @@
     0% {
         bottom: 0;
     }
-    10% {
-        bottom: 15%;
-    }
-    20% {
-        bottom: 25%;
-    }
-    30% {
-        bottom: 35%;
-    }
-    40% {
-        bottom: 45%;
-    }
     50% {
         bottom: 50%;
     }
-    60% {
-        bottom: 45%;
+    100% {
+        bottom: 0%;
     }
-    70% {
-        bottom: 35%;
-    }
-    80% {
-        bottom: 25%;
-    }
-    90% {
-        bottom: 15%;
-    }
+}
+
+@keyframes animacao-personagem {
+    0%, 100% { background-image: url('img/dino-run1.png'); } /* Primeira imagem */
+    50% { background-image: url('img/dino-run2.png'); } /* Segunda imagem */
 }
