@@ -5,7 +5,8 @@ export const ELEMENTS = {
     operacao: document.querySelector('.texto-centralizado'),
     respostas: document.querySelector('.respostas'),
     obstaculos: document.querySelector('.obstaculos'),
-    board: document.querySelector('#board')
+    board: document.querySelector('#board'),
+    score: document.querySelector('.score')
   };
   
   export const OBSTACULO_CLASSES = {
@@ -15,7 +16,7 @@ export const ELEMENTS = {
   };
   
   export const IMAGES = {
-    gameOver: 'img/game-over.png'
+    gameOver: '../img/game-over.png'
   };
   
   

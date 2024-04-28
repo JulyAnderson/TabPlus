@@ -5,34 +5,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tab+</title>
-    <link rel="stylesheet" href="tabplus.css">
+    <link rel="stylesheet" href="./style/tabplus.css">
 </head>
 
 <body>
     <div id="board">
-
+        <div class="score">Pontuação: 0</div> <!-- Elemento para exibição da pontuação -->
         <!-- Elemento de texto - operação -->
-        <div class="texto-centralizado">
-
-        </div>
+        <div class="texto-centralizado"></div>
 
         <!--- Elementos de botões de resposta -->
-        <div class="respostas">
-            <button class="iniciar">Iniciar</button>
-        </div>
+        <div class="respostas"><button class="iniciar">Iniciar</button></div>
 
         <!-- Elementos obstaculos-->
         <div class="obstaculos"> </div>
 
-        <div class="personagem">
-            <!-- Elemento do personagem -->
-            <img src="/img/dino.png" alt="Personagem">
-        </div>
+        <!-- Elemento do personagem -->
+        <div class="personagem"><img src="/img/dino.png" alt="Personagem"></div>
 
         <img src="img/track.png" alt="chão do jogo" class="track">
     </div>
-
 </body>
+
 <script type="module" src="./script/tabplus.js"></script>
 
 </html>

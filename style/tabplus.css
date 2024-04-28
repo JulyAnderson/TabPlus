@@ -3,74 +3,81 @@
     padding: 0;
     box-sizing: border-box;
     font-family: Courier, monospace; /* Define a fonte como Courier ou qualquer outra fonte monoespaçada */
-};
+}
 
 #board{
     background: linear-gradient(to bottom, skyblue, rgb(224, 238, 243));
     /* Estilos para o board */
     width: 100%; /* 90% da largura da janela */
-    height: 80%; /* 60% da altura da janela */
+    height: 70vh; /* 60% da altura da janela */
     position: relative;
     overflow: hidden;
-};
+}
 
 .texto-centralizado {
     text-align: center; /* Centraliza o texto horizontalmente */
-    margin-top: -10px; /* Desloca o texto 10 pixels para cima */
-    font-size: 10%; /* Define o tamanho da fonte proporcional a 20% da largura da janela de visualização */
-};
+    margin-top: 1%; /* Desloca o texto 10 pixels para cima */
+    font-size: 10vh; /* Define o tamanho da fonte proporcional a 20% da largura da janela de visualização */
+}
 
 .respostas {
     display: flex;  /* Flexbox para esta div */
     justify-content: center;  /* Centraliza horizontalmente */
     align-items: center;  /* Centraliza verticalmente */
-    height: 30%;  /* Altura do contêiner das respostas */
-};
+    height: 20%;  /* Altura do contêiner das respostas */
+}
 
 .respostas button{
     background-color: rgb(226, 221, 241);
-    padding: 2% 4%;
+    padding: 1% 3%;
     border: none;
     cursor: pointer;
     margin: 1%;
-    font-size: 4%;
-};
+    font-size: 4vw;
+}
 
 .personagem {
-    width: 5%;
-    height: 12%;
+    width: 6%;
+    height: 20%;
     background-size: cover; /* Cobrir todo o espaço do elemento */
     position: absolute;
-    bottom: 2%;
+    bottom: 1%;
     left: 30%;
-};
+}
 
 .personagem img{
     width: 100%;
     height:100%;
     bottom: 0%;
-};
+}
 
 .personagem-animado {
-    width: 5%;
-    height: 12%;
+    width: 6%;
+    height: 20%;
     background-size: cover; /* Cobrir todo o espaço do elemento */
     position: absolute;
-    bottom: 1%;
+    bottom: 2%;
     left: 30%;
-    background-image: url('img/dino-run1.png'), url('img/dino-run2.png'); /* Duas imagens separadas */
-    animation: animacao-personagem 0.5s steps(2) infinite; /* 2 imagens, alternando entre elas */
-};
+    background-image: url('../img/dino-run1.png') url('../img/dino-run2.png'); /* Duas imagens separadas */
+    animation: animacao-personagem 0.5s steps(2) infinite; /*2 imagens, alternando entre elas*/
+}
 
 .personagem-animado img{
-    width: 4.5%;
-    height: 12%;
-    bottom: 2%;
-};
+    width: 100%;
+    height: 100%;
+    bottom: 0%;
+}
 
 .jump{
-    animation: jump 1000ms  ease-in;
-};
+    width: 6%;
+    height: 20%;
+    background-size: cover; /* Cobrir todo o espaço do elemento */
+    position: absolute;
+    bottom: 2%;
+    left: 30%;
+    background-image: url('../img/dino-jump.png');
+    animation: jump 1000ms ease-out;
+}
 
 .obstaculos{
     width: 100%;
@@ -78,53 +85,53 @@
     background-size: cover; /* Cobrir todo o espaço do elemento */
     position: absolute;
     bottom: 1%;
-};
+}
 
 .obstaculo1 {
-    width: 5%;
+    width: 3%;
     height: 100%;
     right: -100px;
     background-size: cover;
     position: absolute;
     bottom: 1%;
-    background-image: url('/img/cactus1.png'); /* Adicione a barra inicial para indicar raiz */
+    background-image: url('../img/cactus1.png'); /* Adicione a barra inicial para indicar raiz */
     animation: obstaculo-animation 4s linear;
-};
+}
 
 .obstaculo2 {
-    width: 10%;
+    width: 6%;
     height:100%;
     right: -150px;
     position: absolute;
     bottom: 1%;
     background-size: cover;
-    background-image: url('/img/cactus2.png'); /* Ajuste o caminho da imagem */
+    background-image: url('../img/cactus2.png'); /* Ajuste o caminho da imagem */
     animation: obstaculo-animation 4s linear;
-};
+}
 
 .obstaculo3 {
-    width: 15%;
+    width: 9%;
     height:100%;
     right: -200px;
     position: absolute;
     bottom: 1%;
     background-size: cover;
-    background-image: url('/img/cactus3.png'); /* Corrige o caminho da imagem */
+    background-image: url('../img/cactus3.png'); /* Corrige o caminho da imagem */
     animation: obstaculo-animation 3s linear;
-};
+}
 
 .track{
     position: absolute;
     bottom: 0;
     width: 100%;
-};
+}
 
 .game-over{
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-};
+}
 
 .botao-reiniciar{
     background-color: rgb(226, 221, 241);
@@ -137,7 +144,7 @@
     top: 60%;
     left: 50%;
     transform: translate(-50%, -50%);
-};
+}
 
 @keyframes obstaculo-animation {
     0% {
@@ -146,22 +153,22 @@
     100% {
         left: -20%; /* Termina fora da tela à esquerda (com margem extra para garantir que o obstáculo não apareça abruptamente) */
     }
-};
+}
 
 @keyframes jump {
     0% {
-        bottom: 0;
+        transform: translateY(0); /* Começa na posição original */
     }
     50% {
-        bottom: 40%;
+        transform: translateY(-25vh); /* Sobe para 40% da altura do board */
     }
     100% {
-        bottom: 0%;
+        transform: translateY(0); /* Retorna para a posição original */
     }
-};
+}
+
 
 @keyframes animacao-personagem {
-    0%, 100% { background-image: url('img/dino-run1.png'); } /* Primeira imagem */
-    50% { background-image: url('img/dino-run2.png'); } /* Segunda imagem */
-};
-
+    0%, 100% { background-image: url('../img/dino-run1.png'); } /* Primeira imagem */
+    50% { background-image: url('../img/dino-run2.png'); } /* Segunda imagem */
+}
