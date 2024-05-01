@@ -36,7 +36,7 @@ window.addEventListener("DOMContentLoaded", () => {
     iniciarJogo; // Para garantir que o jogo começou corretamente
     
     // Loop de colisão após o loop principal
-    intervalId = setInterval(gameLoop, 10); 
+    intervalId = setInterval(gameLoop, 5); 
 });
 
 function iniciarJogoAnimacao() {
@@ -47,7 +47,7 @@ function iniciarJogoAnimacao() {
 // Função para gerar questões matemáticas
 function gerarQuestaoMatematica() {
     const operacaoData = Matematica.gerarOperacao();
-    const { conta, resposta } = operacaoData;
+    const { conta, resposta, fator1, fator2 } = operacaoData;
     const opcoes = Matematica.gerarOpcoes(resposta);
 
     adicionarQuestao(conta);
@@ -88,6 +88,7 @@ function jump() {
     setTimeout(() => {
         ELEMENTS.personagem.classList.remove("jump");
     }, 1000);
+    gameLoop()
 }
 
 // Funções para limpeza e reinício do jogo
@@ -134,6 +135,7 @@ function gameLoop() {
     for (const obstaculo of obstaculos) {
         if (detectCollision(personagem, obstaculo)) {
             gameOver(); 
+            clearInterval(intervalId);
             return;
         }
     }
@@ -154,6 +156,8 @@ function gameOver() {
     botaoReiniciar.classList.add("botao-reiniciar");
     ELEMENTS.board.appendChild(botaoReiniciar);
     botaoReiniciar.addEventListener('click', reiniciarJogo);
+
+    
 }
 
 function reiniciarJogo() {
@@ -191,4 +195,4 @@ function atualizarScore() {
         scoreElement.textContent = `Pontuação: ${score}`;
     }
 }
-    
+

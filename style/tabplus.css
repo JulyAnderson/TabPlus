@@ -14,6 +14,14 @@
     overflow: hidden;
 }
 
+.score{
+    position: absolute;
+    top: 1%;
+    left: 1%;
+    font-size: 4vh;
+}
+
+
 .texto-centralizado {
     text-align: center; /* Centraliza o texto horizontalmente */
     margin-top: 1%; /* Desloca o texto 10 pixels para cima */
@@ -37,43 +45,42 @@
 }
 
 .personagem {
-    width: 6%;
-    height: 20%;
+    width: 5%;
+    height: 12%;
     background-size: cover; /* Cobrir todo o espaço do elemento */
     position: absolute;
-    bottom: 1%;
+    bottom: 0%;
     left: 30%;
 }
 
 .personagem img{
     width: 100%;
     height:100%;
-    bottom: 0%;
+    bottom: 1%;
 }
 
 .personagem-animado {
-    width: 6%;
-    height: 20%;
+    width: 5%;
+    height: 12%;
     background-size: cover; /* Cobrir todo o espaço do elemento */
     position: absolute;
-    bottom: 2%;
+    bottom: 1%;
     left: 30%;
-    background-image: url('../img/dino-run1.png') url('../img/dino-run2.png'); /* Duas imagens separadas */
     animation: animacao-personagem 0.5s steps(2) infinite; /*2 imagens, alternando entre elas*/
 }
 
 .personagem-animado img{
-    width: 100%;
-    height: 100%;
-    bottom: 0%;
-}
+        width: 100%;
+        height:100%;
+        bottom: 3%;
+}  
 
-.jump{
-    width: 6%;
-    height: 20%;
+.jump {
+    width: 5%;
+    height: 12%;
     background-size: cover; /* Cobrir todo o espaço do elemento */
     position: absolute;
-    bottom: 2%;
+    bottom: 3%;
     left: 30%;
     background-image: url('../img/dino-jump.png');
     animation: jump 1000ms ease-out;
@@ -169,6 +176,6 @@
 
 
 @keyframes animacao-personagem {
-    0%, 100% { background-image: url('../img/dino-run1.png'); } /* Primeira imagem */
+    0%, 100% { background-image: url('../img/dino-run1.png');} /* Primeira imagem */
     50% { background-image: url('../img/dino-run2.png'); } /* Segunda imagem */
 }
