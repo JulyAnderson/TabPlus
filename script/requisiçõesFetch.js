@@ -4,6 +4,7 @@ async function postSchoolClass(schoolClassGrade, schoolClassYear){
   let data = '{"school_class_grade":"'+schoolClassGrade+'","school_class_year":'+schoolClassYear+'}'
   const optionsSchoolClassPOST = {
     method: 'POST',
+    mode: 'cors',
     headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
     body: data
   };
@@ -14,7 +15,7 @@ async function postSchoolClass(schoolClassGrade, schoolClassYear){
 }
 //GET All SchoolClass
 async function getAllSchoolClasses(){ 
-  const optionsSchoolClassGET = { method: 'GET', headers: { 'Access-Control-Allow-Origin': '*' } };
+  const optionsSchoolClassGET = { method: 'GET', mode: 'cors', headers: { 'Access-Control-Allow-Origin': '*' } };
   fetch('https://tabplusbackend.onrender.com/SchoolClass', optionsSchoolClassGET)
     .then(response => response.json())
     .then(response => console.log(response))
@@ -23,7 +24,7 @@ async function getAllSchoolClasses(){
 //GET SchoolClass By Id
 
 async function getSchoolClassById(id){  
-  const optionsSchoolClassGETByID = { method: 'GET', headers: { 'Access-Control-Allow-Origin': '*' } };
+  const optionsSchoolClassGETByID = { method: 'GET', mode: 'cors', headers: { 'Access-Control-Allow-Origin': '*' } };
 
   fetch('https://tabplusbackend.onrender.com/SchoolClass/'+id, optionsSchoolClassGETByID)
     .then(response => response.json())
@@ -38,6 +39,7 @@ async function postStudent(studentName, schoolClassId){
   let data = '{"student_name":"'+studentName+'","school_class_id":'+schoolClassId+'}'
   const optionsStudentPOST = {
     method: 'POST',
+    mode: 'cors',
     headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
     body: data
   };
@@ -48,7 +50,7 @@ async function postStudent(studentName, schoolClassId){
 }
 // GET All Student
 async function getAllStudents(){
-  const optionsStudentGET = { method: 'GET', headers: { 'Access-Control-Allow-Origin': '*' } };
+  const optionsStudentGET = { method: 'GET', mode: 'cors', headers: { 'Access-Control-Allow-Origin': '*' } };
   fetch('https://tabplusbackend.onrender.com/Student', optionsStudentGET)
     .then(response => response.json())
     .then(response => console.log(response))
@@ -56,7 +58,7 @@ async function getAllStudents(){
 }
 // GET Student By Id
 async function getStudentById(id){
-  const optionsStudentGETByID = { method: 'GET', headers: { 'Access-Control-Allow-Origin': '*' } };
+  const optionsStudentGETByID = { method: 'GET', mode: 'cors', headers: { 'Access-Control-Allow-Origin': '*' } };
   fetch('https://tabplusbackend.onrender.com/Student/'+id, optionsStudentGETByID)
     .then(response => response.json())
     .then(response => console.log(response))
@@ -69,6 +71,7 @@ async function PostTurn(studentId){
   let data = '{"student_id":'+studentId+'}'
   const optionsTurnPOST = {
     method: 'POST',
+    mode: 'cors',
     headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
     body: data
   };
@@ -79,7 +82,7 @@ async function PostTurn(studentId){
 }
 //GET All Turn
 async function getAllTurns(){
-  const optionsTurnGET = { method: 'GET', headers: { 'Access-Control-Allow-Origin': '*' } };
+  const optionsTurnGET = { method: 'GET', mode: 'cors', headers: { 'Access-Control-Allow-Origin': '*' } };
 
   fetch('https://tabplusbackend.onrender.com/Turn', optionsTurnGET)
     .then(response => response.json())
@@ -88,7 +91,7 @@ async function getAllTurns(){
 }
 //GET Turn By Id
 async function getTurnById(id){
-  const optionsTurnGETByID = { method: 'GET', headers: { 'Access-Control-Allow-Origin': '*' } };
+  const optionsTurnGETByID = { method: 'GET', mode: 'cors', headers: { 'Access-Control-Allow-Origin': '*' } };
 
   fetch('https://tabplusbackend.onrender.com/Turn/'+id, optionsTurnGETByID)
     .then(response => response.json())
@@ -102,6 +105,7 @@ async function postOperation(firstTerm, secondTerm, answer, turnId){
   let data = '{"first_term":'+firstTerm+',"second_term":'+secondTerm+',"answer":'+answer+',"turn_id":'+turnId+'}'
   const optionsOperationPOST = {
     method: 'POST',
+    mode: 'cors',
     headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
     body: data
   };
@@ -112,7 +116,7 @@ async function postOperation(firstTerm, secondTerm, answer, turnId){
 }
 //GET All Operation 
 async function getAllOperation(){
-  const optionsOperationGET = { method: 'GET', headers: { 'Access-Control-Allow-Origin': '*' } };
+  const optionsOperationGET = { method: 'GET', mode: 'cors', headers: { 'Access-Control-Allow-Origin': '*' } };
 
   fetch('https://tabplusbackend.onrender.com/Operation', optionsOperationGET)
     .then(response => response.json())
@@ -121,7 +125,7 @@ async function getAllOperation(){
 }
 //GET Operation By Id
 async function getOpertaionById(id){
-  const optionsOperationGETByID = { method: 'GET', headers: { 'Access-Control-Allow-Origin': '*' } };
+  const optionsOperationGETByID = { method: 'GET', mode: 'cors', headers: { 'Access-Control-Allow-Origin': '*' } };
 
   fetch('https://tabplusbackend.onrender.com/Operation/'+id, optionsOperationGETByID)
     .then(response => response.json())
