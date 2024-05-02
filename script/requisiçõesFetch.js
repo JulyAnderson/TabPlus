@@ -1,39 +1,44 @@
-
 //POST SchoolClass
-export function postarTurmaAno(){
+
 const optionsSchoolClassPOST = {
   method: 'POST',
   headers: {'Content-Type': 'application/json', 'User-Agent': 'insomnia/9.0.0'},
   body: '{"school_class_grade":"6º A","school_class_year":2024}'
-}
+};
 
 fetch('https://tabplusbackend.onrender.com/SchoolClass', optionsSchoolClassPOST)
   .then(response => response.json())
   .then(response => console.log(response))
-  .catch(err => console.error(err))};
+  .catch(err => console.error(err));
 
 //GET All SchoolClass
-
-const optionsSchoolClassGET = {method: 'GET', headers: {'User-Agent': 'insomnia/9.0.0'}};
-
-fetch('https://tabplusbackend.onrender.com/SchoolClass', optionsSchoolClassGET)
-  .then(response => response.json())
-  .then(response => console.log(response))
+async function getAllSchoolClasses(){ 
+  let output;
+  const optionsSchoolClassGET = { method: 'GET', mode: 'no-cors', headers: { 'Access-Control-Allow-Origin': '*' } };
+  fetch('https://tabplusbackend.onrender.com/SchoolClass', optionsSchoolClassGET)
+    .then(response => response.json())
+    .then(response => output = response)
   .catch(err => console.error(err));
 
+  return output
+}
 //GET SchoolClass By Id
 
-const optionsSchoolClassGETByID = {method: 'GET', headers: {'User-Agent': 'insomnia/9.0.0'}};
+async function getSchoolClassById(id) {
+  let output;
+  const optionsSchoolClassGETByID = { method: 'GET', mode: 'no-cors', headers: { 'Access-Control-Allow-Origin': '*' } };
+  fetch('https://tabplusbackend.onrender.com/SchoolClass/'+id, optionsSchoolClassGETByID)
+    .then(response => response.json())
+    .then(response => output = response)
+    .catch(err => console.error(err));
 
-fetch('https://tabplusbackend.onrender.com/SchoolClass/1', optionsSchoolClassGETByID)
-  .then(response => response.json())
-  .then(response => console.log(response))
-  .catch(err => console.error(err));
+    return output
+  }
 
 //------------------------------------------------------------------------------------------
 
 //POST Student
-export function postarAluno() {
+
 const optionsStudentPOST = {
   method: 'POST',
   headers: {'Content-Type': 'application/json', 'User-Agent': 'insomnia/8.6.1'},
@@ -43,30 +48,34 @@ const optionsStudentPOST = {
 fetch('https://tabplusbackend.onrender.com/Student?=', optionsStudentPOST)
   .then(response => response.json())
   .then(response => console.log(response))
-  .catch(err => console.error(err))}
+  .catch(err => console.error(err));
 
 // GET All Student
+async function getAllStudents(){
+  const optionsStudentGET = { method: 'GET', mode: 'no-cors', headers: { 'Access-Control-Allow-Origin': '*' } };
+  let output;
+  fetch('https://tabplusbackend.onrender.com/Student', optionsStudentGET)
+    .then(response => response.json())
+    .then(response => output = response)
+    .catch(err => console.error(err));
 
-const optionsStudentGET = {method: 'GET', headers: {'User-Agent': 'insomnia/8.6.1'}};
-
-fetch('https://tabplusbackend.onrender.com/Student', optionsStudentGET)
-  .then(response => response.json())
-  .then(response => console.log(response))
-  .catch(err => console.error(err));
-
+  return output
+}
 // GET Student By Id
+async function getStudentById(id){
+  const optionsStudentGETByID = { method: 'GET', mode: 'no-cors', headers: { 'Access-Control-Allow-Origin': '*' } };
+  let output;
+  fetch('https://tabplusbackend.onrender.com/Student/'+id, optionsStudentGETByID)
+    .then(response => response.json())
+    .then(response => output = response)
+    .catch(err => console.error(err));
 
-const optionsStudentGETByID = {method: 'GET', headers: {'User-Agent': 'insomnia/9.0.0'}};
-
-fetch('https://tabplusbackend.onrender.com/Student/1', optionsStudentGETByID)
-  .then(response => response.json())
-  .then(response => console.log(response))
-  .catch(err => console.error(err));
-
+  return output
+}
 //------------------------------------------------------------------------------------------
 
 //POST Turn
-export function turno(){
+
 const optionsTurnPOST = {
   method: 'POST',
   headers: {'Content-Type': 'application/json', 'User-Agent': 'insomnia/9.0.0'},
@@ -76,30 +85,34 @@ const optionsTurnPOST = {
 fetch('https://tabplusbackend.onrender.com/Turn', optionsTurnPOST)
   .then(response => response.json())
   .then(response => console.log(response))
-  .catch(err => console.error(err))};
+  .catch(err => console.error(err));
 
 //GET All Turn
+async function getAllTurns() {
+  let output;
+  const optionsTurnGET = { method: 'GET', mode: 'no-cors', headers: { 'Access-Control-Allow-Origin': '*' } };
+  fetch('https://tabplusbackend.onrender.com/Turn', optionsTurnGET)
+    .then(response => response.json())
+    .then(response => output = response)
+    .catch(err => console.error(err));
 
-const optionsTurnGET = {method: 'GET', headers: {'User-Agent': 'insomnia/9.0.0'}};
-
-fetch('https://tabplusbackend.onrender.com/Turn', optionsTurnGET)
-  .then(response => response.json())
-  .then(response => console.log(response))
-  .catch(err => console.error(err));
-
+  return output
+}
 //GET Turn By Id
+async function getTurnById(id) {
+  let output;
+  const optionsTurnGETByID = { method: 'GET', mode: 'no-cors', headers: { 'Access-Control-Allow-Origin': '*' } };
+  fetch('https://tabplusbackend.onrender.com/Turn/'+id, optionsTurnGETByID)
+    .then(response => response.json())
+    .then(response => output = response)
+    .catch(err => console.error(err));
 
-const optionsTurnGETByID = {method: 'GET', headers: {'User-Agent': 'insomnia/9.0.0'}};
-
-fetch('https://tabplusbackend.onrender.com/Turn/1', optionsTurnGETByID)
-  .then(response => response.json())
-  .then(response => console.log(response))
-  .catch(err => console.error(err));
-
+  return output
+}
 //------------------------------------------------------------------------------------------
 
 //POST Operation
-export function postarQuestao (){
+
 const optionsOperationPOST = {
   method: 'POST',
   headers: {'Content-Type': 'application/json', 'User-Agent': 'insomnia/9.0.0'},
@@ -109,22 +122,27 @@ const optionsOperationPOST = {
 fetch('https://tabplusbackend.onrender.com/Operation', optionsOperationPOST)
   .then(response => response.json())
   .then(response => console.log(response))  
-  .catch(err => console.error(err))}
+  .catch(err => console.error(err));
 
 //GET All Operation 
+async function getAllOperation() {
+  let output;
+  const optionsOperationGET = { method: 'GET', mode: 'no-cors', headers: { 'Access-Control-Allow-Origin': '*' } };
+  fetch('https://tabplusbackend.onrender.com/Operation', optionsOperationGET)
+    .then(response => response.json())
+    .then(response => output = response)
+    .catch(err => console.error(err));
 
-const optionsOperationGET = {method: 'GET', headers: {'User-Agent': 'insomnia/9.0.0'}};
-
-fetch('https://tabplusbackend.onrender.com/Operation', optionsOperationGET)
-  .then(response => response.json())
-  .then(response => console.log(response))
-  .catch(err => console.error(err));
-
+  return output
+}
 //GET Operation By Id
+async function getOpertaionById(id) {
+  let output;
+  const optionsOperationGETByID = { method: 'GET', mode: 'no-cors', headers: { 'Access-Control-Allow-Origin': '*' } };
+  fetch('https://tabplusbackend.onrender.com/Operation/'+id, optionsOperationGETByID)
+    .then(response => response.json())
+    .then(response => output = response)
+    .catch(err => console.error(err));
 
-const optionsOperationGETByID = {method: 'GET', headers: {'User-Agent': 'insomnia/9.0.0'}};
-
-fetch('https://tabplusbackend.onrender.com/Operation/1', optionsOperationGETByID)
-  .then(response => response.json())
-  .then(response => console.log(response))
-  .catch(err => console.error(err));
+  return output
+}
