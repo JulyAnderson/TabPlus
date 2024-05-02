@@ -1,16 +1,16 @@
 
 //POST SchoolClass
-
+export function postarTurmaAno(){
 const optionsSchoolClassPOST = {
   method: 'POST',
   headers: {'Content-Type': 'application/json', 'User-Agent': 'insomnia/9.0.0'},
   body: '{"school_class_grade":"6º A","school_class_year":2024}'
-};
+}
 
 fetch('https://tabplusbackend.onrender.com/SchoolClass', optionsSchoolClassPOST)
   .then(response => response.json())
   .then(response => console.log(response))
-  .catch(err => console.error(err));
+  .catch(err => console.error(err))};
 
 //GET All SchoolClass
 
@@ -33,7 +33,7 @@ fetch('https://tabplusbackend.onrender.com/SchoolClass/1', optionsSchoolClassGET
 //------------------------------------------------------------------------------------------
 
 //POST Student
-
+export function postarAluno() {
 const optionsStudentPOST = {
   method: 'POST',
   headers: {'Content-Type': 'application/json', 'User-Agent': 'insomnia/8.6.1'},
@@ -43,7 +43,7 @@ const optionsStudentPOST = {
 fetch('https://tabplusbackend.onrender.com/Student?=', optionsStudentPOST)
   .then(response => response.json())
   .then(response => console.log(response))
-  .catch(err => console.error(err));
+  .catch(err => console.error(err))}
 
 // GET All Student
 
@@ -66,7 +66,7 @@ fetch('https://tabplusbackend.onrender.com/Student/1', optionsStudentGETByID)
 //------------------------------------------------------------------------------------------
 
 //POST Turn
-
+export function turno(){
 const optionsTurnPOST = {
   method: 'POST',
   headers: {'Content-Type': 'application/json', 'User-Agent': 'insomnia/9.0.0'},
@@ -76,7 +76,7 @@ const optionsTurnPOST = {
 fetch('https://tabplusbackend.onrender.com/Turn', optionsTurnPOST)
   .then(response => response.json())
   .then(response => console.log(response))
-  .catch(err => console.error(err));
+  .catch(err => console.error(err))};
 
 //GET All Turn
 
@@ -99,7 +99,7 @@ fetch('https://tabplusbackend.onrender.com/Turn/1', optionsTurnGETByID)
 //------------------------------------------------------------------------------------------
 
 //POST Operation
-
+export function postarQuestao (){
 const optionsOperationPOST = {
   method: 'POST',
   headers: {'Content-Type': 'application/json', 'User-Agent': 'insomnia/9.0.0'},
@@ -109,7 +109,7 @@ const optionsOperationPOST = {
 fetch('https://tabplusbackend.onrender.com/Operation', optionsOperationPOST)
   .then(response => response.json())
   .then(response => console.log(response))  
-  .catch(err => console.error(err));
+  .catch(err => console.error(err))}
 
 //GET All Operation 
 

@@ -2,6 +2,7 @@ import { ELEMENTS, IMAGES } from './constantes.js';
 import { IniciarJogo } from './iniciar_jogo.js';
 import { Matematica } from './matematica.js';
 import { GeradorObstaculos } from './obstaculo.js';
+import { postarAluno, postarQuestao, postarTurmaAno } from './requisiçõesFetch.js';
 
 // Inicialização do jogo
 let intervalId;
@@ -52,6 +53,8 @@ function gerarQuestaoMatematica() {
 
     adicionarQuestao(conta);
     adicionarOpcoes(opcoes, resposta);
+    console.log(operacaoData)
+    return operacaoData;    
 }
 
 function adicionarQuestao(conta) {
@@ -83,12 +86,19 @@ function verificarResposta(respostaSelecionada, respostaCorreta) {
     }
 }
 
+let isJumping = false; // Variável para controlar se o personagem está pulando
+
+// Função para iniciar o pulo do personagem
 function jump() {
-    ELEMENTS.personagem.classList.add("jump");
-    setTimeout(() => {
-        ELEMENTS.personagem.classList.remove("jump");
-    }, 1000);
-    gameLoop()
+    if (!isJumping) { // Verifica se o personagem já está no ar
+        isJumping = true; // Define que o personagem está pulando
+        ELEMENTS.personagem.classList.add("jump");
+        setTimeout(() => {
+            ELEMENTS.personagem.classList.remove("jump");
+            isJumping = false; // Define que o personagem terminou o pulo
+        }, 1000);
+    }
+    gameLoop(); // Chama o gameLoop após o pulo
 }
 
 // Funções para limpeza e reinício do jogo
@@ -128,15 +138,18 @@ function detectCollision(el1, el2) {
     );
 }
 
+// Função para verificar colisões e terminar o jogo se houver
 function gameLoop() {
-    const obstaculos = ELEMENTS.obstaculos.children;
-    const personagem = ELEMENTS.personagem;
+    if (!isJumping) { // Verifica se o personagem está no ar
+        const obstaculos = ELEMENTS.obstaculos.children;
+        const personagem = ELEMENTS.personagem;
 
-    for (const obstaculo of obstaculos) {
-        if (detectCollision(personagem, obstaculo)) {
-            gameOver(); 
-            clearInterval(intervalId);
-            return;
+        for (const obstaculo of obstaculos) {
+            if (detectCollision(personagem, obstaculo)) {
+                gameOver(); 
+                clearInterval(intervalId);
+                return;
+            }
         }
     }
 }
@@ -156,8 +169,6 @@ function gameOver() {
     botaoReiniciar.classList.add("botao-reiniciar");
     ELEMENTS.board.appendChild(botaoReiniciar);
     botaoReiniciar.addEventListener('click', reiniciarJogo);
-
-    
 }
 
 function reiniciarJogo() {
@@ -184,7 +195,7 @@ function reiniciarJogo() {
     gerador = new GeradorObstaculos(ELEMENTS.obstaculos); // Cria um novo gerador de obstáculos
     
     loop(); // Reinicia o loop do jogo
-    intervalId = setInterval(gameLoop, 5); // Recomeça o loop de colisão
+    intervalId = setInterval(gameLoop, 1); // Recomeça o loop de colisão
 }
 
 
@@ -195,4 +206,5 @@ function atualizarScore() {
         scoreElement.textContent = `Pontuação: ${score}`;
     }
 }
+
 
