@@ -1,7 +1,7 @@
 const BASE_URL = "https://tabplusbackend.onrender.com";
 
 // POST SchoolClass
-async function postSchoolClass(schoolClassGrade, schoolClassYear) {
+export async function postSchoolClass(schoolClassGrade, schoolClassYear) {
   let data = {
     school_class_grade: schoolClassGrade,
     school_class_year: schoolClassYear,
@@ -39,7 +39,7 @@ async function getSchoolClassById(id) {
 //------------------------------------------------------------------------------------------
 
 // POST Student
-async function postStudent(studentName, schoolClassId) {
+export async function postStudent(studentName, schoolClassId) {
   let data = {
     student_name: studentName,
     school_class_id: schoolClassId,
@@ -145,4 +145,4 @@ async function getOpertaionById(id) {
 
   return fetch(`${BASE_URL}/Operation/${id}`, optionsOperationGETByID)
     .then(async (response) => await response.json())
-    .catch((err) => console.error(err));
+    .catch((err) => console.error(err))};

@@ -14,23 +14,23 @@
     overflow: hidden;
 }
 
-
 .form {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    margin-top: 10%;
+    margin-top: 5%;
+    align-items: center; /* Alinha o texto horizontalmente no centro */
 }
 
-
-label {
-    text-align: center;
+.form_group{
+    width: 100%;
 }
 
 input[type="text"] {
     width: 100%; /* Isso fará com que os campos de entrada ocupem toda a largura disponível */
     box-sizing: border-box; /* Isso garantirá que a largura definida inclua padding e bordas */
+    display: flex; /* Ativa o flexbox nos inputs */
 }
+
 
 .score{
     position: absolute;

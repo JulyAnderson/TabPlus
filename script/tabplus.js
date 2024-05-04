@@ -2,7 +2,6 @@ import { ELEMENTS, IMAGES } from './constantes.js';
 import { IniciarJogo } from './iniciar_jogo.js';
 import { Matematica } from './matematica.js';
 import { GeradorObstaculos } from './obstaculo.js';
-import { postarAluno, postarQuestao, postarTurmaAno } from './requisiçõesFetch.js';
 
 // Inicialização do jogo
 let intervalId;
