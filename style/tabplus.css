@@ -14,6 +14,24 @@
     overflow: hidden;
 }
 
+
+.form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10%;
+}
+
+
+label {
+    text-align: center;
+}
+
+input[type="text"] {
+    width: 100%; /* Isso fará com que os campos de entrada ocupem toda a largura disponível */
+    box-sizing: border-box; /* Isso garantirá que a largura definida inclua padding e bordas */
+}
+
 .score{
     position: absolute;
     top: 1%;
