@@ -14,7 +14,6 @@ export async function postSchoolClass(schoolClassGrade, schoolClassYear) {
   };
 
   return fetch(`${BASE_URL}/SchoolClass`, optionsSchoolClassPOST)
-    .then(async (response) => await response.json())
     .catch((err) => console.error(err));
 }
 
@@ -39,7 +38,7 @@ async function getSchoolClassById(id) {
 //------------------------------------------------------------------------------------------
 
 // POST Student
-export async function postStudent(studentName, schoolClassId) {
+export  async function postStudent(studentName, schoolClassId) {
   let data = {
     student_name: studentName,
     school_class_id: schoolClassId,
@@ -52,12 +51,11 @@ export async function postStudent(studentName, schoolClassId) {
   };
 
   return fetch(`${BASE_URL}/Student`, optionsStudentPOST)
-    .then(async (response) => await response.json())
     .catch((err) => console.error(err));
 }
 
 // GET All Student
-async function getAllStudents() {
+export async function getAllStudents() {
   const optionsStudentGET = { method: "GET" };
 
   return fetch(`${BASE_URL}/Student`, optionsStudentGET)
@@ -66,7 +64,7 @@ async function getAllStudents() {
 }
 
 // GET Student By Id
-async function getStudentById(id) {
+export async function getStudentById(id) {
   const optionsStudentGETByID = { method: "GET" };
 
   return fetch(`${BASE_URL}/Student/${id}`, optionsStudentGETByID)
@@ -77,7 +75,7 @@ async function getStudentById(id) {
 //------------------------------------------------------------------------------------------
 
 // POST Turn
-async function PostTurn(studentId) {
+export async function PostTurn(studentId) {
   let data = { student_id: studentId };
 
   const optionsTurnPOST = {
@@ -87,7 +85,6 @@ async function PostTurn(studentId) {
   };
 
   return fetch(`${BASE_URL}/Turn`, optionsTurnPOST)
-    .then(async (response) => await response.json())
     .catch((err) => console.error(err));
 }
 
@@ -111,7 +108,7 @@ async function getTurnById(id) {
 //------------------------------------------------------------------------------------------
 
 // POST Operation
-async function postOperation(firstTerm, secondTerm, answer, turnId) {
+export async function postOperation(firstTerm, secondTerm, answer, turnId) {
   let data = {
     first_term: firstTerm,
     second_term: secondTerm,
@@ -126,7 +123,6 @@ async function postOperation(firstTerm, secondTerm, answer, turnId) {
   };
 
   return fetch(`${BASE_URL}/Operation`, optionsOperationPOST)
-    .then(async (response) => await response.json())
     .catch((err) => console.error(err));
 }
 

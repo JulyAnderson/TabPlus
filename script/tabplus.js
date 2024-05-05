@@ -2,46 +2,38 @@ import { ELEMENTS, IMAGES } from './constantes.js';
 import { IniciarJogo } from './iniciar_jogo.js';
 import { Matematica } from './matematica.js';
 import { GeradorObstaculos } from './obstaculo.js';
+import { postOperation, getAllStudents, PostTurn} from './requisiçõesFetch.js';
 
 // Inicialização do jogo
 let intervalId;
 let score = 0; // Contador de pontuação
 let iniciarJogo = new IniciarJogo(ELEMENTS, loop);
 let gerador = new GeradorObstaculos(ELEMENTS.obstaculos);
-
-// Funções de utilidade
-function verificarOrientacao() {
-    if (window.innerHeight > window.innerWidth) {
-        alert("Por favor, gire o dispositivo para a orientação paisagem para jogar.");
-    }
-}
+let operations = []; // Armazena as operações para envio posterior
+let isJumping = false; // Variável para controlar se o personagem está pulando
 
 // Função principal do jogo
 function loop() {
-    // Gerador de obstáculos primeiro
     gerador.gerarObstaculos();
-    
-    // Tempo para os obstáculos serem inseridos no DOM
     setTimeout(() => {
         gameLoop(); // Loop de colisão depois de obstáculos serem gerados
     }, 50); // Pequeno atraso para garantir que elementos estejam prontos
 
     iniciarJogoAnimacao();
-    gerarQuestaoMatematica();
+    const operacaoData = gerarQuestaoMatematica();
+    
+    adicionarVerificacao(operacaoData); // Adiciona a operação à lista de operações acumuladas
 }
 
-window.addEventListener("DOMContentLoaded", () => {
-    verificarOrientacao();
-    window.addEventListener("orientationchange", verificarOrientacao);
-    iniciarJogo; // Para garantir que o jogo começou corretamente
-    
-    // Loop de colisão após o loop principal
-    intervalId = setInterval(gameLoop, 5); 
-});
+// Função para adicionar a operação gerada à lista de operações acumuladas
+function adicionarVerificacao(operacaoData) {
+    operations.push(operacaoData); // Armazena a operação para envio posterior
+}
 
+// Função para iniciar a animação do jogo
 function iniciarJogoAnimacao() {
-    ELEMENTS.personagem.classList.add('personagem-animado');
-    ELEMENTS.personagem.classList.remove('personagem')
+    ELEMENTS.personagem.classList.add("personagem-animado");
+    ELEMENTS.personagem.classList.remove("personagem");
 }
 
 // Função para gerar questões matemáticas
@@ -50,81 +42,71 @@ function gerarQuestaoMatematica() {
     const { conta, resposta, fator1, fator2 } = operacaoData;
     const opcoes = Matematica.gerarOpcoes(resposta);
 
-    adicionarQuestao(conta);
-    adicionarOpcoes(opcoes, resposta);
-    console.log(operacaoData)
-    return operacaoData;    
+    adicionarQuestao(conta); // Exibe a operação na tela
+    adicionarOpcoes(opcoes, resposta); // Adiciona as opções para escolha
+
+    return { fator1, fator2, resposta, conta };    
 }
 
+// Função para adicionar a questão ao DOM
 function adicionarQuestao(conta) {
-    const questao = document.createElement('h2');
+    const questao = document.createElement("h2");
     questao.textContent = conta;
     ELEMENTS.operacao.appendChild(questao);
 }
 
+// Função para adicionar opções ao DOM
 function adicionarOpcoes(opcoes, respostaCorreta) {
     opcoes.forEach(opcao => {
-        const botao = document.createElement('button');
+        const botao = document.createElement("button");
         botao.textContent = opcao;
-        botao.addEventListener('click', () => verificarResposta(opcao, respostaCorreta));
+        botao.addEventListener("click", () => verificarResposta(opcao, respostaCorreta));
         ELEMENTS.respostas.appendChild(botao);
     });
 }
 
+// Verificar resposta e atualizar score
 function verificarResposta(respostaSelecionada, respostaCorreta) {
     if (respostaSelecionada === respostaCorreta) {
         score++; // Incrementa a pontuação
         atualizarScore(); // Atualiza a exibição na tela
-        jump();
+
+        jump(); // O pulo agora não faz postagens para a API
         setTimeout(() => {
             limparTela();
             loop(); // Regenera as operações e opções
         }, 1000);
     } else {
-        gameOver();
+        gameOver(); // Envia as operações acumuladas para a API
     }
 }
 
-let isJumping = false; // Variável para controlar se o personagem está pulando
-
-// Função para iniciar o pulo do personagem
+// Função para pular
 function jump() {
-    if (!isJumping) { // Verifica se o personagem já está no ar
-        isJumping = true; // Define que o personagem está pulando
+    if (!isJumping) {
+        isJumping = true;
         ELEMENTS.personagem.classList.add("jump");
         setTimeout(() => {
             ELEMENTS.personagem.classList.remove("jump");
-            isJumping = false; // Define que o personagem terminou o pulo
+            isJumping = false;
         }, 1000);
     }
-    gameLoop(); // Chama o gameLoop após o pulo
 }
 
-// Funções para limpeza e reinício do jogo
+// Funções de limpeza e reinício do jogo
 function limparTela() {
-    ELEMENTS.operacao.innerHTML = '';
-    ELEMENTS.respostas.innerHTML = '';
+    ELEMENTS.operacao.innerHTML = "";
+    ELEMENTS.respostas.innerHTML = "";
     limparObstaculos();
     removerElementosExtra();
 }
 
+// Função para limpar obstáculos
 function limparObstaculos() {
     ELEMENTS.obstaculos.innerHTML = '';
 }
 
-function removerElementosExtra() {
-    const botaoReiniciar = document.querySelector('.botao-reiniciar');
-    if (botaoReiniciar) {
-        botaoReiniciar.remove();
-    }
-
-    const img = document.querySelector('.game-over');
-    if (img) {
-        img.remove();
-    }
-}
-
-// Funções de detecção de colisões e game over
+// Funções de colisão e game over
 function detectCollision(el1, el2) {
     const rect1 = el1.getBoundingClientRect();
     const rect2 = el2.getBoundingClientRect();
@@ -137,73 +119,121 @@ function detectCollision(el1, el2) {
     );
 }
 
-// Função para verificar colisões e terminar o jogo se houver
+// Função para verificar colisões
 function gameLoop() {
-    if (!isJumping) { // Verifica se o personagem está no ar
+    if (!isJumping) {
         const obstaculos = ELEMENTS.obstaculos.children;
         const personagem = ELEMENTS.personagem;
 
         for (const obstaculo of obstaculos) {
             if (detectCollision(personagem, obstaculo)) {
-                gameOver(); 
-                clearInterval(intervalId);
+                gameOver(); // Envia as operações acumuladas para a API
+                clearInterval(intervalId); // Para o loop
                 return;
             }
         }
     }
 }
 
-// Função para terminar o jogo
-function gameOver() {
+// Função para o Game Over e envio de operações acumuladas
+async function gameOver() {
     console.log("Game Over!");
-    limparTela(); 
 
-    const img = document.createElement("img");
-    img.src = IMAGES.gameOver;
-    img.classList.add('game-over');
-    ELEMENTS.board.appendChild(img);
+    try {
+        const turnId = await createTurn(); // Criar um turno para enviar operações
 
-    const botaoReiniciar = document.createElement('button');
-    botaoReiniciar.textContent = "Reiniciar Jogo";
-    botaoReiniciar.classList.add("botao-reiniciar");
-    ELEMENTS.board.appendChild(botaoReiniciar);
-    botaoReiniciar.addEventListener('click', reiniciarJogo);
+        // Enviar todas as operações para a API com o turno
+        for (const op of operations) {
+            await postOperation(op.fator1, op.fator2, op.resposta, turnId);
+        }
+
+        // Limpar a lista de operações após envio
+        operations = [];
+
+        // Mostrar a tela de game over e opção para reiniciar
+        limparTela();
+
+        const img = document.createElement("img");
+        img.src = IMAGES.gameOver;
+        img.classList.add("game-over");
+        ELEMENTS.board.appendChild(img);
+
+        const botaoReiniciar = document.createElement("button");
+        botaoReiniciar.textContent = "Reiniciar Jogo";
+        botaoReiniciar.classList.add("botao-reiniciar");
+        ELEMENTS.board.appendChild(botaoReiniciar);
+
+        botaoReiniciar.addEventListener("click", reiniciarJogo); // Reiniciar o jogo
+
+    } catch (error) {
+        console.error("Erro ao processar o Game Over:", error);
+        throw error; // Rethrow para propagar erro
+    }
 }
 
 function reiniciarJogo() {
-
-    // Remova a tela de game over e reinicie o jogo
+    // Remover elementos de game over
     const gameOverElement = document.querySelector('.game-over');
     const botaoReiniciar = document.querySelector('.botao-reiniciar');
-    
+
     if (gameOverElement) {
         gameOverElement.remove();
     }
-    
+
     if (botaoReiniciar) {
         botaoReiniciar.remove();
     }
-        
-    // Reinicializa a lógica do jogo
-    limparTela();
-    
-    score = 0; // Redefine a pontuação para zero ao reiniciar o jogo
-    atualizarScore(); // Atualiza a exibição na tela
-    
-    iniciarJogo = new IniciarJogo(ELEMENTS, loop); // Cria uma nova instância de IniciarJogo
-    gerador = new GeradorObstaculos(ELEMENTS.obstaculos); // Cria um novo gerador de obstáculos
-    
-    loop(); // Reinicia o loop do jogo
-    intervalId = setInterval(gameLoop, 1); // Recomeça o loop de colisão
+
+    // Reinicializar o jogo
+    limparTela(); 
+    score = 0; // Reinicializa a pontuação
+    atualizarScore(); 
+
+    iniciarJogo = new IniciarJogo(ELEMENTS, loop);
+    gerador = new GeradorObstaculos(ELEMENTS.obstaculos); 
+
+    loop(); // Reinicia o loop
+    intervalId = setInterval(gameLoop, 1); // Reinicia o loop de colisão
 }
 
-
+// Atualizar a pontuação
 function atualizarScore() {
-    // Atualiza a exibição da pontuação
-    const scoreElement = ELEMENTS.score; // Um elemento no DOM para exibir a pontuação
+    const scoreElement = ELEMENTS.score; // Verifica a existência do elemento
     if (scoreElement) {
         scoreElement.textContent = `Pontuação: ${score}`;
     }
 }
 
+// Função para remover elementos extras
+function removerElementosExtra() {
+    const botaoReiniciar = document.querySelector('.botao-reiniciar');
+    if (botaoReiniciar) {
+        botaoReiniciar.remove();
+    }
 
+    const img = document.querySelector('.game-over');
+    if (img) {
+        img.remove();
+    }
+}
+
+async function createTurn() {
+    try {
+      const estudantes = await getAllStudents(); // Buscar todos os estudantes
+      if (!estudantes || estudantes.length === 0) {
+        throw new Error("Nenhum estudante encontrado."); // Verifica se há estudantes
+      }
+  
+      const estudante = estudantes[0]; // Obter o primeiro estudante
+      const studentId = estudante.id; // Obter o `studentId`
+  
+      const turnResponse = await PostTurn(studentId); // Criar um turno com o `studentId`
+      const turnId = turnResponse.id; // Obter o `turnId`
+      
+      return turnId;
+    } catch (error) {
+      console.error("Erro ao criar turno:", error); // Tratar exceção adequadamente
+      throw error; // Rethrow para propagar erro
+    }
+  }
+  

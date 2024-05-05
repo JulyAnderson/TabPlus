@@ -11,6 +11,10 @@ export class IniciarJogo {
       const turma = document.getElementById('turma').value;
       const ano = document.getElementById('ano').value;
 
+      const respostaDiv = document.createElement('div')
+      respostaDiv.className = "respostas"
+      ELEMENTS.board.appendChild(respostaDiv)
+
       // Adicionar validação, por exemplo:
       if (!aluno || !turma || !ano) {
         alert('Preencha todos os campos');
@@ -38,6 +42,10 @@ export class IniciarJogo {
     if (ELEMENTS.personagem) {
       ELEMENTS.personagem.innerHTML = ''; // Remove a imagem do personagem estático
     }
+    if (ELEMENTS.formulario) {
+      ELEMENTS.formulario.remove(); // Remove o formulário
+    }
+
     });
   }
 }

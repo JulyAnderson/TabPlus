@@ -6,7 +6,8 @@ export const ELEMENTS = {
     respostas: document.querySelector('.respostas'),
     obstaculos: document.querySelector('.obstaculos'),
     board: document.querySelector('#board'),
-    score: document.querySelector('.score')
+    score: document.querySelector('.score'),
+    formulario: document.querySelector(".form")
   };
   
   export const OBSTACULO_CLASSES = {

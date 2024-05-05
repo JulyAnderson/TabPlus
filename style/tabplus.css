@@ -46,7 +46,7 @@ input[type="text"] {
     font-size: 10vh; /* Define o tamanho da fonte proporcional a 20% da largura da janela de visualização */
 }
 
-.respostas {
+.respostas, .iniciar_jogo {
     display: flex;  /* Flexbox para esta div */
     justify-content: center;  /* Centraliza horizontalmente */
     align-items: center;  /* Centraliza verticalmente */
