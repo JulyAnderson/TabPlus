@@ -9,7 +9,7 @@ import { aluno, turma, ano } from './iniciar_jogo.js';
 // Inicialização do jogo
 let intervalId;
 let score = 0; // Contador de pontuação
-let iniciarJogo = new IniciarJogo(ELEMENTS, loop, aluno, turma, ano);
+let iniciarJogo = new IniciarJogo(ELEMENTS, loop);
 let gerador = new GeradorObstaculos(ELEMENTS.obstaculos);
 let operations = []; // Armazena as operações para envio posterior
 let isJumping = false; // Variável para controlar se o personagem está pulando
@@ -219,14 +219,20 @@ document.addEventListener("DOMContentLoaded", () => {
     const iniciarBotao = document.querySelector(".iniciar");
 
     // Restaurar valores do localStorage
-    reiniciarAluno.value = localStorage.getItem("aluno") || '';
-    reiniciarTurma.value = localStorage.getItem("turma") || '';
-    reiniciarAno.value = localStorage.getItem("ano") || '';
-    // Verifica se o botão foi encontrado antes de tentar clicar
-    if (iniciarBotao) {
+    reiniciarAluno.value = localStorage.getItem("aluno") ;
+    reiniciarTurma.value = localStorage.getItem("turma") ;
+    reiniciarAno.value = localStorage.getItem("ano") ;
+    reiniciarAluno.value = aluno ? aluno : '';
+    reiniciarTurma.value = turma ? turma : '';
+    reiniciarAno.value = ano ? ano : '';
+
+    // Verifica se todos os valores do localStorage são válidos
+    const todosValoresPresentes = aluno && turma && ano;
+
+    // Se todos os valores estiverem presentes, clicar automaticamente no botão iniciar
+    if (todosValoresPresentes && iniciarBotao) {
         iniciarBotao.click(); // Clica automaticamente no botão
     }
-
 });
 
 // Atualizar a pontuação
