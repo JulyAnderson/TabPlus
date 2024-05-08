@@ -197,7 +197,7 @@ input[type="text"] {
 #aguarde-mensagem {
     text-align: center;
     /* Centraliza o texto horizontalmente */
-    margin-top: 12%;
+    margin-top: 99%;
     /* Desloca o texto 10 pixels para cima */
     font-size: 4vh;
     /* Define o tamanho da fonte proporcional a 20% da largura da janela de visualização */
