@@ -29,7 +29,7 @@
     width: 100%;
 }
 
-input[type="text"] {
+input[type="text"], select {
     width: 100%;
     /* Isso fará com que os campos de entrada ocupem toda a largura disponível */
     box-sizing: border-box;
@@ -37,7 +37,7 @@ input[type="text"] {
     display: flex;
     /* Ativa o flexbox nos inputs */
 }
-
+;
 
 .score {
     position: absolute;
@@ -56,8 +56,7 @@ input[type="text"] {
     /* Define o tamanho da fonte proporcional a 20% da largura da janela de visualização */
 }
 
-.respostas,
-.iniciar_jogo {
+.respostas, .iniciar_jogo {
     display: flex;
     /* Flexbox para esta div */
     justify-content: center;
@@ -68,13 +67,14 @@ input[type="text"] {
     /* Altura do contêiner das respostas */
 }
 
-.respostas button {
+.respostas button, .iniciar_jogo button {
     background-color: rgb(226, 221, 241);
     padding: 1% 3%;
     border: none;
     cursor: pointer;
     margin: 1%;
     font-size: 4vw;
+    margin-top: 10%;
 }
 
 .personagem {

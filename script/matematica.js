@@ -3,6 +3,7 @@ export class Matematica {
       const fatoresFrequentes = () => [0, 1, 2, 5, 10][Math.floor(Math.random() * 5)];
       const fatoresSegundoMaisFrequentes = () => [3, 4][Math.floor(Math.random() * 2)];
       const fatoresMenosFrequentes = () => [6, 7, 8, 9][Math.floor(Math.random() * 4)];
+      const fatorRaro = () => [11, 12, 13,14, 15][Math.floor(Math.random() * 5)];
   
       let fator1, fator2;
   
@@ -18,10 +19,12 @@ export class Matematica {
       const randomIndex2 = Math.random();
       if (randomIndex2 < 0.5) {
         fator2 = fatoresFrequentes();
-      } else if (randomIndex2 < 0.75) {
-        fator2 = fatoresSegundoMaisFrequentes();
-      } else {
+      } else if (randomIndex2 < 0.6) {
+        fator2 = fatoresSegundoMaisFrequentes(); 
+      } else if (randomIndex2 < 0.8){
         fator2 = fatoresMenosFrequentes();
+      } else {
+        fator2 = fatorRaro();
       }
   
       const conta = `${fator1} x ${fator2}`;

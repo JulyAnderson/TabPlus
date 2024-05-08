@@ -3,7 +3,7 @@ import { IniciarJogo } from './iniciar_jogo.js';
 import { Matematica } from './matematica.js';
 import { GeradorObstaculos } from './obstaculo.js';
 import { postOperation, getAllStudents, PostTurn, postStudent, postSchoolClass } from './requisiçõesFetch.js';
-import { aluno, turma, ano } from './iniciar_jogo.js';
+import { aluno, turma, ano, anoAtual } from './iniciar_jogo.js';
 
 
 // Inicialização do jogo
@@ -67,7 +67,10 @@ function adicionarOpcoes(opcoes, respostaCorreta) {
     opcoes.forEach(opcao => {
         const botao = document.createElement("button");
         botao.textContent = opcao;
-        botao.addEventListener("click", () => verificarResposta(opcao, respostaCorreta));
+        botao.addEventListener("click", function verificarEremover() {
+            verificarResposta(opcao, respostaCorreta);
+            botao.removeEventListener("click", verificarEremover);
+        });
         ELEMENTS.respostas.appendChild(botao);
     });
 }
@@ -78,7 +81,7 @@ function verificarResposta(respostaSelecionada, respostaCorreta) {
         score++; // Incrementa a pontuação
         atualizarScore(); // Atualiza a exibição na tela
 
-        jump(); // O pulo agora não faz postagens para a API
+        jump(); // O pulo agora não faz postagens para a API;
         setTimeout(() => {
             limparTela();
             loop(); // Regenera as operações e opções
@@ -87,6 +90,7 @@ function verificarResposta(respostaSelecionada, respostaCorreta) {
         gameOver(); // Envia as operações acumuladas para a API
     }
 }
+
 
 // Função para pular
 function jump() {

@@ -20,12 +20,25 @@
                     <input type="text" name="aluno" class="aluno" id="aluno" placeholder="Fulano de Tal">
                 </div>
                 <div class="form_group">
-                    <label for="turma">Turma:</label>
-                    <input type="text" name="turma" class="turma" id="turma" placeholder="6º Ano A">
+                    <label for="ano">Ano:</label>
+                    <select name="ano" id="ano">
+                        <option value="" disabled selected hidden>Selecione o Ano</option>
+                        <option value="6">6º Ano</option>
+                        <option value="7">7º Ano</option>
+                        <option value="8">8º Ano</option>
+                        <option value="9">9º Ano</option>
+                    </select>
                 </div>
                 <div class="form_group">
-                    <label for="ano">Ano:</label>
-                    <input type="text" name="ano" class="ano" id="ano" placeholder="2024">
+                    <label for="turma">Turma:</label>
+                    <select name="turma" id="turma" aria-placeholder="Selecione sua Turma">
+                        <option value="" disabled selected hidden>Selecione sua Turma</option>
+                        <option value="A">Turma A</option>
+                        <option value="B">Turma B</option>
+                        <option value="C">Turma C</option>
+                        <option value="D">Turma D</option>
+                        <option value="E">Turma E</option>
+                    </select>
                 </div>
                 <div class="iniciar_jogo" >
                     <button type="button" class="iniciar">Iniciar</button>

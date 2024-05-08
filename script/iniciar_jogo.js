@@ -2,6 +2,10 @@
 let aluno = '';
 let turma = '';
 let ano = '';
+let dataAtual = new Date();
+
+// Extrair o ano atual
+let anoAtual = dataAtual.getFullYear();
 
 const gameForm = document.getElementById('game-form');
 const iniciarButton = document.querySelector('.iniciar');
@@ -11,8 +15,9 @@ export class IniciarJogo {
     ELEMENTS.iniciar.addEventListener('click', async () => {
 
       aluno = document.getElementById('aluno').value;
-      turma = document.getElementById('turma').value;
       ano = document.getElementById('ano').value;
+      turma = document.getElementById('turma').value;
+      
 
       const respostaDiv = document.createElement('div')
       respostaDiv.className = "respostas"
@@ -49,4 +54,7 @@ export class IniciarJogo {
 }
 
 // Exportar as variáveis globais para uso em outros módulos
-export { aluno, turma, ano };
+export { aluno, turma, ano, anoAtual };
+
+
+
