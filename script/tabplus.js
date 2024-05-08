@@ -2,26 +2,33 @@ import { ELEMENTS, IMAGES } from './constantes.js';
 import { IniciarJogo } from './iniciar_jogo.js';
 import { Matematica } from './matematica.js';
 import { GeradorObstaculos } from './obstaculo.js';
-import { postOperation, getAllStudents, PostTurn} from './requisiçõesFetch.js';
+import { postOperation, getAllStudents, PostTurn, postStudent, postSchoolClass } from './requisiçõesFetch.js';
+import { aluno, turma, ano } from './iniciar_jogo.js';
+
 
 // Inicialização do jogo
 let intervalId;
 let score = 0; // Contador de pontuação
-let iniciarJogo = new IniciarJogo(ELEMENTS, loop);
+let iniciarJogo = new IniciarJogo(ELEMENTS, loop, aluno, turma, ano);
 let gerador = new GeradorObstaculos(ELEMENTS.obstaculos);
 let operations = []; // Armazena as operações para envio posterior
 let isJumping = false; // Variável para controlar se o personagem está pulando
+let jogoAtivo = true; // Sinalizador para controlar se o jogo está ativo
 
 // Função principal do jogo
 function loop() {
+    if (!jogoAtivo) return; // Verifica se o jogo deve continuar
+
     gerador.gerarObstaculos();
     setTimeout(() => {
-        gameLoop(); // Loop de colisão depois de obstáculos serem gerados
+        if (jogoAtivo) {
+            gameLoop(); // Loop de colisão depois de obstáculos serem gerados
+        }
     }, 50); // Pequeno atraso para garantir que elementos estejam prontos
 
     iniciarJogoAnimacao();
     const operacaoData = gerarQuestaoMatematica();
-    
+
     adicionarVerificacao(operacaoData); // Adiciona a operação à lista de operações acumuladas
 }
 
@@ -45,7 +52,7 @@ function gerarQuestaoMatematica() {
     adicionarQuestao(conta); // Exibe a operação na tela
     adicionarOpcoes(opcoes, resposta); // Adiciona as opções para escolha
 
-    return { fator1, fator2, resposta, conta };    
+    return { fator1, fator2, resposta, conta };
 }
 
 // Função para adicionar a questão ao DOM
@@ -106,95 +113,121 @@ function limparObstaculos() {
     ELEMENTS.obstaculos.innerHTML = '';
 }
 
-// Funções de colisão e game over
 function detectCollision(el1, el2) {
     const rect1 = el1.getBoundingClientRect();
     const rect2 = el2.getBoundingClientRect();
-
-    return (
-        rect1.left < rect2.right &&
-        rect1.right > rect2.left &&
-        rect1.top < rect2.bottom &&
-        rect1.bottom > rect2.top
-    );
+    const intersectX = rect1.right > rect2.left;
+    const intersectY = rect1.bottom < rect2.top
+    return intersectX || intersectY;
 }
+
 
 // Função para verificar colisões
 function gameLoop() {
-    if (!isJumping) {
-        const obstaculos = ELEMENTS.obstaculos.children;
-        const personagem = ELEMENTS.personagem;
+    if (!jogoAtivo) return; // Verifica se o jogo deve continuar
 
-        for (const obstaculo of obstaculos) {
-            if (detectCollision(personagem, obstaculo)) {
-                gameOver(); // Envia as operações acumuladas para a API
-                clearInterval(intervalId); // Para o loop
-                return;
+    intervalId = setInterval(() => {
+        if (!isJumping) {
+            const obstaculos = ELEMENTS.obstaculos.children;
+            const personagem = ELEMENTS.personagem;
+            for (const obstaculo of obstaculos) {
+                if (detectCollision(personagem, obstaculo)) {
+                    gameOver(); // Envia as operações acumuladas para a API
+                    clearInterval(intervalId); // Parar o loop de colisão
+                    jogoAtivo = false; // Define sinalizador para false
+                    return;
+                }
             }
         }
-    }
+    }, 100); // Verifique colisões a cada 100 ms
 }
 
-// Função para o Game Over e envio de operações acumuladas
 async function gameOver() {
     console.log("Game Over!");
 
+    // Pare todos os loops e defina o sinalizador para parar o jogo
+    jogoAtivo = false;
+    clearInterval(intervalId);
+    limparTela()
+
+
+    console.time("Tempo para enviar dados para o backend"); // Inicia a contagem do tempo
+
     try {
-        const turnId = await createTurn(); // Criar um turno para enviar operações
+        // Exibir uma mensagem de espera para o usuário
+        const aguardeDiv = document.createElement("div");
+        aguardeDiv.id = "aguarde-mensagem";
+        aguardeDiv.textContent = "Aguarde... Enviando dados para o servidor";
+        ELEMENTS.board.appendChild(aguardeDiv);
 
-        // Enviar todas as operações para a API com o turno
-        for (const op of operations) {
-            await postOperation(op.fator1, op.fator2, op.resposta, turnId);
-        }
-
-        // Limpar a lista de operações após envio
-        operations = [];
-
-        // Mostrar a tela de game over e opção para reiniciar
-        limparTela();
+        // Adicionar o botão de reiniciar, mas inicialmente desabilitado
+        const botaoReiniciar = document.createElement("button");
+        botaoReiniciar.textContent = "Reiniciar Jogo";
+        botaoReiniciar.classList.add("botao-reiniciar");
+        botaoReiniciar.disabled = true; // Desabilitado até completar o envio
+        ELEMENTS.board.appendChild(botaoReiniciar);
 
         const img = document.createElement("img");
         img.src = IMAGES.gameOver;
         img.classList.add("game-over");
         ELEMENTS.board.appendChild(img);
 
-        const botaoReiniciar = document.createElement("button");
-        botaoReiniciar.textContent = "Reiniciar Jogo";
-        botaoReiniciar.classList.add("botao-reiniciar");
-        ELEMENTS.board.appendChild(botaoReiniciar);
+        // Adicionar lógica para enviar os dados para o backend
+        const schoolClass = await postSchoolClass(turma, ano);
+        const student = await postStudent(aluno, schoolClass.id);
+        const turnId = await createTurn(student.id);
 
-        botaoReiniciar.addEventListener("click", reiniciarJogo); // Reiniciar o jogo
+        for (const op of operations) {
+            await postOperation(op.fator1, op.fator2, op.resposta, turnId);
+        }
+
+        console.timeEnd("Tempo para enviar dados para o backend"); // Finaliza a contagem do tempo
+
+        operations = []; // Limpar a lista de operações
+
+        // Salvar informações do aluno no localStorage
+        localStorage.setItem("aluno", aluno);
+        localStorage.setItem("turma", turma);
+        localStorage.setItem("ano", ano);
+
+
+        // Remover a mensagem de "Aguarde..."
+        aguardeDiv.remove();
+
+        // Habilitar o botão de reiniciar após o envio bem-sucedido
+        botaoReiniciar.disabled = false; // Agora o botão pode ser clicado
+        botaoReiniciar.addEventListener("click", () => {
+            window.location.reload(); //recarrega a página
+        });
 
     } catch (error) {
         console.error("Erro ao processar o Game Over:", error);
-        throw error; // Rethrow para propagar erro
+        console.timeEnd("Tempo para enviar dados para o backend"); // Mostra o tempo, mesmo em caso de erro
+
+        if (aguardeDiv) {
+            aguardeDiv.remove(); // Remover a mensagem de "Aguarde..."
+        }
+
+        throw error; // Propagar o erro para tratamento posterior
     }
 }
 
-function reiniciarJogo() {
-    // Remover elementos de game over
-    const gameOverElement = document.querySelector('.game-over');
-    const botaoReiniciar = document.querySelector('.botao-reiniciar');
+document.addEventListener("DOMContentLoaded", () => {
+    const reiniciarAluno = document.getElementById("aluno");
+    const reiniciarTurma = document.getElementById("turma");
+    const reiniciarAno = document.getElementById("ano");
+    const iniciarBotao = document.querySelector(".iniciar");
 
-    if (gameOverElement) {
-        gameOverElement.remove();
+    // Restaurar valores do localStorage
+    reiniciarAluno.value = localStorage.getItem("aluno") || '';
+    reiniciarTurma.value = localStorage.getItem("turma") || '';
+    reiniciarAno.value = localStorage.getItem("ano") || '';
+    // Verifica se o botão foi encontrado antes de tentar clicar
+    if (iniciarBotao) {
+        iniciarBotao.click(); // Clica automaticamente no botão
     }
 
-    if (botaoReiniciar) {
-        botaoReiniciar.remove();
-    }
-
-    // Reinicializar o jogo
-    limparTela(); 
-    score = 0; // Reinicializa a pontuação
-    atualizarScore(); 
-
-    iniciarJogo = new IniciarJogo(ELEMENTS, loop);
-    gerador = new GeradorObstaculos(ELEMENTS.obstaculos); 
-
-    loop(); // Reinicia o loop
-    intervalId = setInterval(gameLoop, 1); // Reinicia o loop de colisão
-}
+});
 
 // Atualizar a pontuação
 function atualizarScore() {
@@ -219,21 +252,20 @@ function removerElementosExtra() {
 
 async function createTurn() {
     try {
-      const estudantes = await getAllStudents(); // Buscar todos os estudantes
-      if (!estudantes || estudantes.length === 0) {
-        throw new Error("Nenhum estudante encontrado."); // Verifica se há estudantes
-      }
-  
-      const estudante = estudantes[0]; // Obter o primeiro estudante
-      const studentId = estudante.id; // Obter o `studentId`
-  
-      const turnResponse = await PostTurn(studentId); // Criar um turno com o `studentId`
-      const turnId = turnResponse.id; // Obter o `turnId`
-      
-      return turnId;
+        const estudantes = await getAllStudents(); // Buscar todos os estudantes
+        if (!estudantes || estudantes.length === 0) {
+            throw new Error("Nenhum estudante encontrado."); // Verifica se há estudantes
+        }
+
+        const estudante = estudantes[0]; // Obter o primeiro estudante
+        const studentId = estudante.id; // Obter o `studentId`
+
+        const turnResponse = await PostTurn(studentId); // Criar um turno com o `studentId`
+        const turnId = turnResponse.id; // Obter o `turnId`
+
+        return turnId;
     } catch (error) {
-      console.error("Erro ao criar turno:", error); // Tratar exceção adequadamente
-      throw error; // Rethrow para propagar erro
+        console.error("Erro ao criar turno:", error); // Tratar exceção adequadamente
+        throw error; // Rethrow para propagar erro
     }
-  }
-  
+}

@@ -1,4 +1,7 @@
-import { postSchoolClass, postStudent } from './requisiçõesFetch.js';
+// Declaração de variáveis globais para aluno, turma e ano
+let aluno = '';
+let turma = '';
+let ano = '';
 
 const gameForm = document.getElementById('game-form');
 const iniciarButton = document.querySelector('.iniciar');
@@ -7,32 +10,27 @@ export class IniciarJogo {
   constructor(ELEMENTS, iniciarLoop) {
     ELEMENTS.iniciar.addEventListener('click', async () => {
 
-      const aluno = document.getElementById('aluno').value;
-      const turma = document.getElementById('turma').value;
-      const ano = document.getElementById('ano').value;
+      aluno = document.getElementById('aluno').value;
+      turma = document.getElementById('turma').value;
+      ano = document.getElementById('ano').value;
 
       const respostaDiv = document.createElement('div')
       respostaDiv.className = "respostas"
       ELEMENTS.board.appendChild(respostaDiv)
 
-      // Adicionar validação, por exemplo:
+      // Adicionar validação:
       if (!aluno || !turma || !ano) {
         alert('Preencha todos os campos');
-        return;
+        return 
       }
-
       try {
-        // Adicionar lógica para enviar os dados para o backend
-        const schoolClass = await postSchoolClass(turma, ano);
-        const student = await postStudent(aluno, schoolClass.id);
-
-        // Agora, chama a função que inicia o loop do jogo
+        //função que inicia o loop do jogo
         if (typeof iniciarLoop === 'function') {
-          iniciarLoop(); // Chama o loop apenas após remover os elementos
+            iniciarLoop(); // Chama o loop apenas após remover os elementos
         }
-      } catch (error) {
+    } catch (error) {
         console.error('Erro ao iniciar o jogo:', error);
-      }
+    }
 
         // Primeiro, remove o botão de iniciar e a imagem do personagem estático
     if (ELEMENTS.iniciar) {
@@ -49,3 +47,6 @@ export class IniciarJogo {
     });
   }
 }
+
+// Exportar as variáveis globais para uso em outros módulos
+export { aluno, turma, ano };

@@ -1,7 +1,6 @@
 // Definição da classe GeradorObstaculos
 export class GeradorObstaculos {
   constructor(ELEMENTO) {
-    // Use `this.obstaculos` para acessar a propriedade da instância
     this.obstaculos = ELEMENTO;
   };
 
@@ -22,7 +21,6 @@ export class GeradorObstaculos {
     const obstaculo = document.createElement('div');
     obstaculo.classList.add(obstaculoEscolhido);
 
-    // Use `this.obstaculos` para adicionar o obstáculo ao elemento fornecido
     this.obstaculos.appendChild(obstaculo);
 
     // Adiciona um event listener para o evento animationend
