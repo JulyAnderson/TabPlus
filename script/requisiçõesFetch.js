@@ -1,144 +1,45 @@
-const BASE_URL = "https://tabplusbackend.onrender.com";
+const BASE_URL = "https://tabplusbackend.onrender.com/Game";
 
-// POST SchoolClass
-export async function postSchoolClass(schoolClassGrade, schoolClassYear) {
+export async function postGame(gameGrade, gameYear, player, hits, multiplication, answer) {
   let data = {
-    school_class_grade: schoolClassGrade,
-    school_class_year: schoolClassYear,
+    game_grade: gameGrade,
+    game_year: gameYear,
+    player: player,
+    hits: hits,
+    multiplication: multiplication,
+    answer: answer
   };
 
-  const optionsSchoolClassPOST = {
+  const options = {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data), // - Convertido em uma JSON String
   };
 
-  return fetch(`${BASE_URL}/SchoolClass`, optionsSchoolClassPOST)
+  return fetch(`${BASE_URL}`, options)
     .catch((err) => console.error(err));
 }
 
-// GET All SchoolClass
-async function getAllSchoolClasses() {
-  const optionsSchoolClassGET = { method: "GET" };
+async function getAllGames() {
+  const options = { method: "GET" };
 
-  return fetch(`${BASE_URL}/SchoolClass`, optionsSchoolClassGET)
+  return fetch(`${BASE_URL}/searchAll`, options)
     .then(async (response) => await response.json())
     .catch((err) => console.error(err));
 }
 
-// GET SchoolClass By Id
-async function getSchoolClassById(id) {
-  const optionsSchoolClassGETByID = { method: "GET" };
+async function getGameById(id) {
+  const options = { method: "GET" };
 
-  return fetch(`${BASE_URL}/SchoolClass/${id}`, optionsSchoolClassGETByID)
+  return fetch(`${BASE_URL}/searchByID/${id}`, options)
     .then(async (response) => await response.json())
     .catch((err) => console.error(err));
 }
 
-//------------------------------------------------------------------------------------------
+async function getGameByPlayer(player) {
+  const options = { method: "GET" };
 
-// POST Student
-export  async function postStudent(studentName, schoolClassId) {
-  let data = {
-    student_name: studentName,
-    school_class_id: schoolClassId,
-  };
-
-  const optionsStudentPOST = {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data), // - Convertido em uma JSON String
-  };
-
-  return fetch(`${BASE_URL}/Student`, optionsStudentPOST)
-    .catch((err) => console.error(err));
-}
-
-// GET All Student
-export async function getAllStudents() {
-  const optionsStudentGET = { method: "GET" };
-
-  return fetch(`${BASE_URL}/Student`, optionsStudentGET)
+  return fetch(`${BASE_URL}/searchByPlayer/${player}`, options)
     .then(async (response) => await response.json())
     .catch((err) => console.error(err));
 }
-
-// GET Student By Id
-export async function getStudentById(id) {
-  const optionsStudentGETByID = { method: "GET" };
-
-  return fetch(`${BASE_URL}/Student/${id}`, optionsStudentGETByID)
-    .then(async (response) => await response.json())
-    .catch((err) => console.error(err));
-}
-
-//------------------------------------------------------------------------------------------
-
-// POST Turn
-export async function PostTurn(studentId) {
-  let data = { student_id: studentId };
-
-  const optionsTurnPOST = {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data), // - Convertido em uma JSON String
-  };
-
-  return fetch(`${BASE_URL}/Turn`, optionsTurnPOST)
-    .catch((err) => console.error(err));
-}
-
-// GET All Turn
-async function getAllTurns() {
-  const optionsTurnGET = { method: "GET" };
-
-  return fetch(`${BASE_URL}/Turn`, optionsTurnGET)
-    .then(async (response) => await response.json())
-    .catch((err) => console.error(err));
-}
-
-// GET Turn By Id
-async function getTurnById(id) {
-  const optionsTurnGETByID = { method: "GET" };
-
-  return fetch(`${BASE_URL}/Turn/${id}`, optionsTurnGETByID)
-    .then(async (response) => await response.json())
-    .catch((err) => console.error(err));
-}
-//------------------------------------------------------------------------------------------
-
-// POST Operation
-export async function postOperation(firstTerm, secondTerm, answer, turnId) {
-  let data = {
-    first_term: firstTerm,
-    second_term: secondTerm,
-    answer: answer,
-    turn_id: turnId,
-  };
-
-  const optionsOperationPOST = {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
-  };
-
-  return fetch(`${BASE_URL}/Operation`, optionsOperationPOST)
-    .catch((err) => console.error(err));
-}
-
-// GET All Operation
-async function getAllOperation() {
-  const optionsOperationGET = { method: "GET" };
-
-  return fetch(`${BASE_URL}/Operation`, optionsOperationGET)
-    .then(async (response) => await response.json())
-    .catch((err) => console.error(err));
-}
-
-// GET Operation By Id
-async function getOpertaionById(id) {
-  const optionsOperationGETByID = { method: "GET" };
-
-  return fetch(`${BASE_URL}/Operation/${id}`, optionsOperationGETByID)
-    .then(async (response) => await response.json())
-    .catch((err) => console.error(err))};
