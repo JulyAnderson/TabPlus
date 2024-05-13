@@ -2,6 +2,7 @@
 let aluno = '';
 let turma = '';
 let ano = '';
+let anoTurma= '';
 let dataAtual = new Date();
 
 // Extrair o ano atual
@@ -17,6 +18,7 @@ export class IniciarJogo {
       aluno = document.getElementById('aluno').value;
       ano = document.getElementById('ano').value;
       turma = document.getElementById('turma').value;
+      anoTurma = ano + turma;
       
 
       const respostaDiv = document.createElement('div')
@@ -54,7 +56,7 @@ export class IniciarJogo {
 }
 
 // Exportar as variáveis globais para uso em outros módulos
-export { aluno, turma, ano, anoAtual };
+export { aluno, anoTurma, anoAtual };
 
 
 

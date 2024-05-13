@@ -2,8 +2,8 @@ import { ELEMENTS, IMAGES } from './constantes.js';
 import { IniciarJogo } from './iniciar_jogo.js';
 import { Matematica } from './matematica.js';
 import { GeradorObstaculos } from './obstaculo.js';
-import { postOperation, getAllStudents, PostTurn, postStudent, postSchoolClass } from './requisiçõesFetch.js';
-import { aluno, turma, ano, anoAtual } from './iniciar_jogo.js';
+import { postGame} from './requisiçõesFetch.js';
+import { aluno, anoTurma, anoAtual } from './iniciar_jogo.js';
 
 
 // Inicialização do jogo
@@ -11,9 +11,9 @@ let intervalId;
 let score = 0; // Contador de pontuação
 let iniciarJogo = new IniciarJogo(ELEMENTS, loop);
 let gerador = new GeradorObstaculos(ELEMENTS.obstaculos);
-let operations = []; // Armazena as operações para envio posterior
 let isJumping = false; // Variável para controlar se o personagem está pulando
 let jogoAtivo = true; // Sinalizador para controlar se o jogo está ativo
+
 
 // Função principal do jogo
 function loop() {
@@ -27,15 +27,9 @@ function loop() {
     }, 50); // Pequeno atraso para garantir que elementos estejam prontos
 
     iniciarJogoAnimacao();
-    const operacaoData = gerarQuestaoMatematica();
-
-    adicionarVerificacao(operacaoData); // Adiciona a operação à lista de operações acumuladas
+    gerarQuestaoMatematica();
 }
 
-// Função para adicionar a operação gerada à lista de operações acumuladas
-function adicionarVerificacao(operacaoData) {
-    operations.push(operacaoData); // Armazena a operação para envio posterior
-}
 
 // Função para iniciar a animação do jogo
 function iniciarJogoAnimacao() {
@@ -76,18 +70,17 @@ function adicionarOpcoes(opcoes, respostaCorreta) {
 }
 
 // Verificar resposta e atualizar score
-function verificarResposta(respostaSelecionada, respostaCorreta) {
+function verificarResposta(respostaSelecionada, respostaCorreta,conta) {
     if (respostaSelecionada === respostaCorreta) {
         score++; // Incrementa a pontuação
         atualizarScore(); // Atualiza a exibição na tela
-
         jump(); // O pulo agora não faz postagens para a API;
         setTimeout(() => {
             limparTela();
             loop(); // Regenera as operações e opções
         }, 1000);
     } else {
-        gameOver(); // Envia as operações acumuladas para a API
+        gameOver(conta, respostaSelecionada);// Envia as operações acumuladas para a API
     }
 }
 
@@ -127,7 +120,7 @@ function detectCollision(el1, el2) {
 
 
 // Função para verificar colisões
-function gameLoop() {
+function gameLoop(conta, respostaSelecionada) {
     if (!jogoAtivo) return; // Verifica se o jogo deve continuar
 
     intervalId = setInterval(() => {
@@ -136,7 +129,7 @@ function gameLoop() {
             const personagem = ELEMENTS.personagem;
             for (const obstaculo of obstaculos) {
                 if (detectCollision(personagem, obstaculo)) {
-                    gameOver(); // Envia as operações acumuladas para a API
+                    gameOver(conta, respostaSelecionada); // Envia as operações acumuladas para a API
                     clearInterval(intervalId); // Parar o loop de colisão
                     jogoAtivo = false; // Define sinalizador para false
                     return;
@@ -146,7 +139,10 @@ function gameLoop() {
     }, 100); // Verifique colisões a cada 100 ms
 }
 
-async function gameOver() {
+async function gameOver(conta, respostaSelecionada) {
+    const contaNoDisplay = document.querySelector('h2');
+    const valorContaNoDisplay = contaNoDisplay.textContent;
+
     console.log("Game Over!");
 
     // Pare todos os loops e defina o sinalizador para parar o jogo
@@ -177,22 +173,15 @@ async function gameOver() {
         ELEMENTS.board.appendChild(img);
 
         // Adicionar lógica para enviar os dados para o backend
-        const schoolClass = await postSchoolClass(turma, ano);
-        const student = await postStudent(aluno, schoolClass.id);
-        const turnId = await createTurn(student.id);
-
-        for (const op of operations) {
-            await postOperation(op.fator1, op.fator2, op.resposta, turnId);
-        }
+        console.log(anoTurma, anoAtual, aluno, score, valorContaNoDisplay, respostaSelecionada)
+        const jogo = await postGame( anoTurma, anoAtual, aluno, score, valorContaNoDisplay, respostaSelecionada);
 
         console.timeEnd("Tempo para enviar dados para o backend"); // Finaliza a contagem do tempo
 
-        operations = []; // Limpar a lista de operações
-
         // Salvar informações do aluno no localStorage
         localStorage.setItem("aluno", aluno);
-        localStorage.setItem("turma", turma);
-        localStorage.setItem("ano", ano);
+        localStorage.setItem("anoTurma", anoTurma);
+        localStorage.setItem("ano", anoAtual);
 
 
         // Remover a mensagem de "Aguarde..."
@@ -257,25 +246,5 @@ function removerElementosExtra() {
     const img = document.querySelector('.game-over');
     if (img) {
         img.remove();
-    }
-}
-
-async function createTurn() {
-    try {
-        const estudantes = await getAllStudents(); // Buscar todos os estudantes
-        if (!estudantes || estudantes.length === 0) {
-            throw new Error("Nenhum estudante encontrado."); // Verifica se há estudantes
-        }
-
-        const estudante = estudantes[0]; // Obter o primeiro estudante
-        const studentId = estudante.id; // Obter o `studentId`
-
-        const turnResponse = await PostTurn(studentId); // Criar um turno com o `studentId`
-        const turnId = turnResponse.id; // Obter o `turnId`
-
-        return turnId;
-    } catch (error) {
-        console.error("Erro ao criar turno:", error); // Tratar exceção adequadamente
-        throw error; // Rethrow para propagar erro
     }
 }

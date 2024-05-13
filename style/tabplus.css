@@ -79,7 +79,7 @@ input[type="text"], select {
 
 .personagem {
     width: 5%;
-    height: 12%;
+    height: 15%;
     background-size: cover;
     /* Cobrir todo o espaço do elemento */
     position: absolute;
@@ -95,7 +95,7 @@ input[type="text"], select {
 
 .personagem-animado {
     width: 5%;
-    height: 12%;
+    height: 15%;
     background-size: cover;
     /* Cobrir todo o espaço do elemento */
     position: absolute;
@@ -197,7 +197,7 @@ input[type="text"], select {
 #aguarde-mensagem {
     text-align: center;
     /* Centraliza o texto horizontalmente */
-    margin-top: 12%;
+    margin-top: 8%;
     /* Desloca o texto 10 pixels para cima */
     font-size: 4vh;
     /* Define o tamanho da fonte proporcional a 20% da largura da janela de visualização */
